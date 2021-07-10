@@ -1,0 +1,16 @@
+https://www.youtube.com/watch?v=Qw9zlE3t8Ko
+
+Docker Compose Example
+----------------------
+
+version: '3.4'
+
+services:
+  product-service:
+    build: ./product
+    volumes:
+      - ./product:/usr/src/app
+    ports:
+      - 5001:80
+
+----------------------

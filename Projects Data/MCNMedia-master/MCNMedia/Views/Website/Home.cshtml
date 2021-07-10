@@ -1,0 +1,455 @@
+﻿@model MCNMedia_Dev.Models.GenericModel;
+@using Microsoft.AspNetCore.Http;
+@{
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_LayoutWebsite.cshtml";
+}
+
+
+
+@{
+    int id = -1;
+    //if (Context.Session.GetInt32("countryId").HasValue)
+    //{
+    //    id = (int)Context.Session.GetInt32("countryId");
+    //}
+    List<SelectListItem> SelectList = Lists.GetCountyList(id);
+}
+
+@*<img src="~/WebsiteAssets/img/cover-image.png" />*@
+<style type="text/css">
+
+    .bluepurple {
+        color: #1f4a79
+    }
+
+    .carousel-inner {
+        max-height: none !important;
+    }
+
+
+    .for-generic {
+        height: 30px;
+        background-color: #1f4a79;
+        margin-bottom: 0px;
+        text-align: center;
+        padding-top: 5px;
+    }
+</style>
+
+<!-- banner slider start -->
+<div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel" data-interval="500000000000">
+    <ol class="carousel-indicators">
+        <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+        <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner">
+
+        <div class="carousel-item active">
+
+            <img src="~/WebsiteAssets/img/banner-img-1-1-1.jpg" class="d-block  h-550 slide-image w-100" alt="...">
+            @*<div class="carousel-caption">
+                    <h5 class="nexa font-60">MCN MEDIA</h5>
+                    <p class="font-36 MyriadPro">
+                        Europe's Leading Specialists <br>
+                        in Live Streaming
+                    </p>
+                </div>*@
+        </div>
+        <div class="carousel-item">
+
+            <img src="~/WebsiteAssets/img/banner-img-2.png" class="d-block h-550 slide-image w-100" alt="...">
+            @*<div class="carousel-caption">
+                    <h5 class="nexa font-60">Do you want start streaming?</h5>
+                    <p class="font-36 MyriadPro">
+                        <div style="width: 220px; margin: auto; text-align: left;">
+                            <div class="fas fa-video mt-3 display-5 "><span class="text-white pl-4">HD Streaming</span></div>
+                            <br />
+                            <div class="fa fa-rss mt-3 display-5 "><span class="text-white pl-4">International Access</span></div>
+                            <br />
+                            <div class="fa fa-lock mt-3 display-5 "><span class="text-white pl-4">Password Protection</span></div>
+                            <br />
+                            <div class="fa fa-universal-access mt-3 display-5 "><span class="text-white pl-4">Access for Sick / Elderly</span></div>
+                            <br />
+                            <div class="fa fa-globe mt-3 display-5 "><span class="text-white pl-4">Viewing Abroad</span></div>
+                            <br />
+                            <div class="fa fa-cogs mt-3 display-5 "><span class="text-white pl-4">Full Website Integration</span></div>
+                        </div>
+                    </p>
+                </div>*@
+        </div>
+        <div class="carousel-item">
+            <img src="~/WebsiteAssets/img/banner-img-3.png" class="d-block  h-550 slide-image w-100" alt="...">
+            @*<div class="carousel-caption">
+                    <h5 class="nexa font-60">Contact Us</h5>
+                    <p class="font-36 MyriadPro">
+                        <div style="width: 200px; margin: auto; text-align: left;">
+                            <div class="fa fa-phone mt-3 display-5 "><a href="tel:+442887729580" class="text-white pl-4">+44 2887729580</a></div>
+                            <br />
+                            <div class="fa fa-envelope mt-3 display-5  mb-3"><a href="mailto:support@watchmcnmedia.tv" class="text-white pl-4">support@watchmcnmedia.tv</a></div>
+                        </div>
+                    </p>
+                    <p class="font-36 MyriadPro">
+
+                    </p>
+                </div>*@
+        </div>
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+<!-- banner slider end -->
+<!-- find curch start -->
+<div class="text-pink font-36 text-center pt-4 bg-white container avantgardece">
+
+</div>
+<div class="bg-blue pt-3 pb-3">
+    <div class="container">
+        @*<div class="row m-0">
+            <div class="col-sm-12 text-center text-white font-36 mb-4">
+            Find your Church
+            </div>
+            </div>*@
+        <div class="row m-0">
+            <div class="col-lg-4 col-md-6 text-white font-32 ">
+                Search your Church
+            </div>
+            <div class="col-lg-4 col-md-3 p-2 selectors-3 col-sm-6 ml-auto">
+                <div class="input-serch-d position-relative">
+                    @*<input list='text_editors' class="empty" placeholder="&#xF002; Select Country">
+                        <i class="far fa-angle-down srch-dopr-icn"></i>*@
+
+                    <select id="select2" name="countryId" class="select-search" onchange="DoPostBack();" asp-items="@(new SelectList(@ViewBag.Countries,"Value","Text",-1))">
+                        <option value="-1">--Select Country--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-3 p-2 selectors-3 col-sm-6 mr-auto">
+                <div class="input-serch-d position-relative">
+                    @*<input list='text_editors2' class="empty" placeholder="&#xF002; Select State">
+                        <i class="far fa-angle-down srch-dopr-icn"></i>*@
+                    <select name="County" class="select-search" id="County" onchange="SearchCameraByCounty();">
+                        <option value="-1">--Select County--</option>
+                    </select>
+                </div>
+                @* <datalist id="text_editors2">
+
+                    <select multiple size=8>
+                    <option value="Atom">Atom</option>
+                    <option value="Brackets">Brackets</option>
+                    <option value="Notepad ++">Notepad ++</option>
+                    <option value="Notepad">Notepad</option>
+                    <option value="Sublime Text">Sublime Text</option>
+                    <option value="TextEdit">TextEdit</option>
+                    <option value="TextMate">TextMate</option>
+                    <option value="Wordpad">Wordpad</option>
+                    </select>
+                    </datalist>*@
+            </div>
+        </div>
+    </div>
+</div>
+      
+<div class="row m-0 mt-5 mb-5">
+    <div class="col-1 d-lg-block d-none"></div>
+    <div class="col-lg-7  col-md-12 col-sm-6">
+        <div class="row" style="position: sticky; top: 1px; margin-top: -0.5rem">
+            @foreach (Church church in Model.ChurchList)
+            {
+                @*<div class="col-lg-4 col-md-6 p-2">
+                        <a href="@Url.Action("Profile", "Website",new { id = church.Slug  })" title="Preview">
+                            <div class="position-relative darker" style="height:179px;">
+                                <img src="@church.ImageURl" class="w-100 h-100 rounded-4" alt="@church.ChurchName">
+                                <div class="overlay-text  text-white avantgardece">@church.ChurchName <br> @church.Town</div>
+                            </div>
+                        </a>
+                    </div>*@
+
+                <div class="col-lg-4 col-md-6 p-1 ">
+                    <div class=" rounded-lg bg-light-gray p-1">
+                        <a href="@Url.Action("Profile", "Website",new { id = church.Slug  })" title="Preview">
+                            <div class="Mobileimage position-relative darker" >
+                                <img src="@church.ImageURl" class="w-100 rounded-lg " alt="@church.ChurchName">
+                            </div>
+                            <div class="avantgardece text-center text-blue font-14 mt-2">@church.ChurchName, @church.Town</div>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="MobileContent col-lg-3 col-md-4 col-sm-6">
+        <div class="border bg-white p-4" style="position: sticky; top: 1px;">
+            @foreach (Place country in Model.CountryList)
+            {
+                <div class="news-wrap mb-3">
+                    <a class="btn btn-pink my-2 my-sm-0 pl-xl-5 pl-4 pr-xl-5 pr-4 text-white  font-14 font-weight-bold mb-2" style="width:100%"
+                       href="@Url.Action("Cameras", "Website",new {Country = country.PlaceName.Replace(' ','-')})">
+                        @country.PlaceName
+                    </a>
+                </div>
+            }
+            @*  <div class="news-wrap">
+                    <h4 class="news-heading font-weight-bold">News</h4>
+                    <p class="font-weight-light mb-2">Recoding of past events St Peter & St Paul's Church </p>
+                    <p class="font-18 mb-0 ">Mass</p>
+                    <p class="font-18 mb-0 ">25 Oct 2020</p>
+                </div>
+                <div class="news-wrap">
+                    <h4 class="news-heading font-weight-bold">News</h4>
+                    <p class="font-weight-light mb-2">Recoding of past events St Peter & St Paul's Church </p>
+                    <p class="font-18 mb-0 ">Mass</p>
+                    <p class="font-18 mb-0 ">25 Oct 2020</p>
+                </div>
+                <img src="~/WebsiteAssets/img/newsimg.png" class="mt-2" alt="">*@
+        </div>
+    </div>
+    <div class="col-1 d-lg-block d-none"></div>
+</div>
+<!-- find curch end -->
+<!-- now? start -->
+@if (Model.LSchedulesInHour.Count() > 0)
+{
+    <div class=" MobileContent text-pink font-36 text-center pt-4 pb-4 bg-white container avantgardece">
+        What's on now
+    </div>
+    <div class=" MobileContent container">
+        <div class="table-now">
+            <table class="table table-striped table-sm table-borderless">
+                <tbody>
+                    @foreach (var schedule in Model.LSchedulesInHour)
+                    {
+
+                        <tr>
+                            <td scope="row" class="bluepurple font-weight-normal"><b>@schedule.ChurchName, @schedule.Town</b></td>
+                            <td class="bluepurple">
+                                <a href="@Url.Action("Profile", "Website", new { id = schedule.Slug })" class="bluepurple">
+
+                                    @if (schedule.IsRepeated == true && schedule.Record == true)
+                                    {
+                                        <p>
+                                            @schedule.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span> <i class="fa fa-video-camera text-danger"></i>
+                                        </p>
+                                    }
+                                    else if (schedule.IsRepeated == true && schedule.Record == false)
+                                    {
+                                        <p>
+                                            @schedule.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span>
+                                        </p>
+                                    }
+                                    else if (schedule.IsRepeated == false && schedule.Record == true)
+                                    {
+                                        <p>
+                                            @schedule.EventName <i class="fa fa-video-camera text-danger"></i>
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        <p>
+                                            @schedule.EventName
+                                        </p>
+                                    }
+                                </a>
+                            </td>
+                            <td scope="row" class="bluepurple font-weight-normal" style="width:90px;">@schedule.EventTime.ToString("h:mm tt")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+<div class="bg-purple pt-3 mt-5">
+    <div class="container pt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <div class='cover' style="margin-bottom:40px">
+                    <video controls class='video' width='100%'>
+                        <source src="https://mcnmedia-app.s3-eu-west-1.amazonaws.com/WebsiteAssects/promo.mp4"
+                                type="video/mp4" />
+
+                        <img src="~/WebsiteAssets/img/video-img.png" alt="">
+                    </video>
+
+                </div>
+
+
+
+            </div>
+            <div class="col-md-6 col-sm-6 text-center self-center">
+                <span class="text-white font-36 text-center pt-4 pb-4 container avantgardece ">
+                    Do you want to start streaming?
+                </span> <br> 
+                <a href="/Website/ContactUs" class="btn btn-pink font-14 avantgardece text-white mt-5 pl-4 pr-4 mb-3">Contact us today</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- now? end -->
+@*
+    <!-- about customer strt -->
+    <div class="text-pink font-36 text-center pt-4 pb-4 bg-white container avantgardece">
+        What our happy customers say.?
+    </div>*@
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+    <div class="container">
+        @*
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="customers-testimonials" class="owl-carousel">
+
+                        <!--TESTIMONIAL 1 -->
+                        <div class="item">
+                            <div class="shadow-effect rounded-0 avantgardece">
+                                <img class="img-circle-testamonial rounded-circle mt-3" src="~/WebsiteAssets/img/client.png" alt="">
+                                <div class="text-center mt-4 pt-2 pb-2 mb-4 text-warning">
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                </div>
+                                <p class="font-14 mb-4">
+                                    “ A great agency who are not only flexible, efficient and
+                                    professional but a group of people who really care about delivering results for you.
+                                    ”
+                                </p>
+                                <p class="font-14 text-center text-warning mb-0 mt-3"> Jonathan Kraus</p>
+                                <p class="font-14 text-center text-warning mb-0 text-lightdark"> berlin - Germany</p>
+                            </div>
+                        </div>
+                        <!--END OF TESTIMONIAL 1 -->
+                        <!--TESTIMONIAL 2 -->
+                        <div class="item">
+
+                            <div class="shadow-effect rounded-0 avantgardece">
+                                <img class="img-circle-testamonial rounded-circle mt-3" src="~/WebsiteAssets/img/client.png" alt="">
+                                <div class="text-center mt-4 pt-2 pb-2 mb-4 text-warning">
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                </div>
+                                <p class="font-14 mb-4">
+                                    “ A great agency who are not only flexible, efficient and
+                                    professional but a group of people who really care about delivering results for you.
+                                    ”
+                                </p>
+                                <p class="font-14 text-center text-warning mb-0 mt-3">Kraus Jonathan </p>
+                                <p class="font-14 text-center text-warning mb-0 text-lightdark"> berlin - Germany</p>
+                            </div>
+                        </div>
+                        <!--END OF TESTIMONIAL 2 -->
+                        <!--TESTIMONIAL 3 -->
+                        <div class="item">
+
+                            <div class="shadow-effect rounded-0 avantgardece">
+                                <img class="img-circle-testamonial rounded-circle mt-3" src="~/WebsiteAssets/img/client.png" alt="">
+                                <div class="text-center mt-4 pt-2 pb-2 mb-4 text-warning">
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                </div>
+                                <p class="font-14 mb-4">
+                                    “ A great agency who are not only flexible, efficient and
+                                    professional but a group of people who really care about delivering results for you.
+                                    ”
+                                </p>
+                                <p class="font-14 text-center text-warning mb-0 mt-3"> Jona Kraus</p>
+                                <p class="font-14 text-center text-warning mb-0 text-lightdark"> berlin - Germany</p>
+                            </div>
+                        </div>
+                        <!--END OF TESTIMONIAL 3 -->
+                    </div>
+                </div>
+            </div>*@
+    </div>
+</section>
+<!-- END OF TESTIMONIALS -->
+@*<div class=" font-36 text-center bg-white avantgardece">
+        Contact US
+    </div>
+    <p class="text-center text-muted avantgardece">if you like to take our services</p>
+    <div class="container">
+        <div class="input-set row col-md-8 col-lg-6 ml-auto mr-auto mt-5 mb-5">
+            <input type="text" class="hiring-in pl-2" type="email" placeholder="enter your email">
+            <button class="hired-btn">Hire Me</button>
+        </div>
+    </div>*@
+
+<script>
+    $(document).ready(function () {
+        DoPostBack();
+    });
+    function DoPostBack() {
+        var CountryId = document.getElementById('select2').value;
+
+        $.ajax({
+            url: "/WebSite/LoadCountyDDL",
+            type: "GET",
+            data: { countryId: CountryId },
+            contentType: "application/json;charset=utf-8",
+            datatype: "json",
+            success: function (result) {
+                var s = '<option value="-1">--Select County--</option>';
+                $.each(result, function (key, item) {
+                    s += '<option value="' + item.countyId + '">' + item.placeName + '</option>'
+                });
+                $("#County").html(s);
+            },
+            error: function (errormessage) {
+                //alert(errormessage.responseText);
+            }
+        });
+    }
+
+    function SearchCameraByCounty() {
+        var filter = "";
+        var countrySelect = document.getElementById("select2");
+        var countryName = countrySelect.options[countrySelect.selectedIndex].text.replace(" ", "-").replace(/\s/g, "-");
+        if (countrySelect.value == "-1") {
+            filter = "Country=all";
+        }
+        else {
+            filter = "Country=" + countryName;
+        }
+
+        var countySelect = document.getElementById("County");
+        var countyName = countySelect.options[countySelect.selectedIndex].text;
+        if (countySelect.value == "-1") {
+            filter += "&County=all";
+        }
+        else {
+            filter += "&County=" + countyName;
+        }
+        window.location.href = "/Website/Cameras?" + filter;
+    }
+
+    $('.cover').on('click', function () {
+        $(this).children().css({
+            'z-index': 1,
+            'opacity': 1
+        });
+        $(this).children().trigger('play');
+
+    });
+
+    $('video').on('click', function () {
+        console.log('a');
+    });
+
+
+</script>
+
+

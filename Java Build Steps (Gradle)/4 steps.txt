@@ -1,0 +1,7 @@
+Once all above done, in /Gradledemo run following commands
+----------------------------------------------------------
+gradle tasks
+gradle build
+gradle run
+----------------------------------------------------------
+

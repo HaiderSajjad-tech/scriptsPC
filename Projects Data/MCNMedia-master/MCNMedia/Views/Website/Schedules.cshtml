@@ -1,0 +1,230 @@
+﻿@model MCNMedia_Dev.Models.GenericSchedule
+@{
+    ViewData["Title"] = "Schedules";
+    Layout = "~/Views/Shared/_LayoutWebsite.cshtml";
+
+}
+
+
+<style type="text/css">
+
+    .bluepurple {
+        color: #1f4a79
+    }
+</style>
+
+<div class="bg-blue  pt-3 pb-3" style=" position: sticky; top: 0px; z-index:5">
+    <div class="container">
+        <div class="row m-0 ">
+            <div class="text-white font-36 text-center  avantgardece">
+                SCHEDULES
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-pink  text-center pt-4 pb-4 bg-white container avantgardece" style="font-size:22px">
+    Below is the timetable of all live events on MCN Media tv for the current day. All times are in UK Timezone.
+    <br />
+    UK Current Time: <b><span id="clock"></span> @DateTime.UtcNow.ToString("dddd"), @DateTime.UtcNow.ToString("dd-MMM-yyyy")</b>
+</div>
+
+<div class="row m-0 mb-5">
+    <div class="col-1 d-lg-block d-none"></div>
+    <div class="col-lg-3 col-md col-sm-6">
+        <div class="border bg-white p-3" style=" position: sticky; top: 1px;">
+            <ul class="nav nav-tabs-vertical-custom " role="tablist" style="width:100%">
+                <li class="news-wrap mb-3" style="width:100%">
+                    <a class="btn btn-pink my-2 my-sm-0 pl-xl-5 pl-4 pr-xl-5 pr-4 text-white font-weight-bolder font-14 mb-2" style="width:100%" id="contact-tab-custom" data-toggle="tab" href="#TodaySchedule" role="tab" aria-controls="TodaySchedule" aria-selected="true">
+                        Today's Schedule
+                    </a>
+                </li>
+                <li class="news-wrap mb-3" style="width:100%">
+                    <a class="btn btn-pink my-2 my-sm-0 pl-xl-5 pl-4 pr-xl-5 pr-4 text-white font-weight-bolder font-14 mb-2" style="width:100%" id="home-tab-custom" data-toggle="tab" href="#CurrentSchedules" role="tab" aria-controls="CurrentSchedules" aria-selected="false">
+                        What's On Now
+                    </a>
+                </li>
+                <li class="news-wrap mb-3" style="width:100%">
+                    <a class="btn btn-pink my-2 my-sm-0 pl-xl-5 pl-4 pr-xl-5 pr-4 text-white font-14 font-weight-bolder mb-2" style="width:100%" id="profile-tab-custom" data-toggle="tab" href="#UpcomingSchedules" role="tab" aria-controls="UpcomingSchedules" aria-selected="false">
+                        UpComing Events
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-7  col-md-12 col-sm-6">
+        <div class="row border bg-white p-3">
+            <div class="tab-content tab-content-vertical tab-content-vertical-custom" style="width:100%">
+                <div class="tab-pane fade show active" id="TodaySchedule" role="tabpanel" aria-labelledby="contact-tab-custom">
+                    <div class="container">
+                        <div class="table-now">
+                            <table class="table table-striped table-sm table-borderless">
+                                <tbody>
+                                    @foreach (Schedule schedule in Model.TodaySchedule)
+                                    {
+                                        <tr>
+                                            <td scope="row" class="bluepurple font-weight-normal"><b>@schedule.ChurchName, @schedule.Town</b> </td>
+                                            <td class="bluepurple">
+                                                <a href="@Url.Action("Profile", "Website",new { id = schedule.Slug })" class="bluepurple">
+                                                    @if (schedule.IsRepeated == true && schedule.Record == true)
+                                                    {
+                                                        <p>
+                                                            @schedule.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span> <i class="fa fa-video-camera text-danger"></i>
+                                                        </p>
+                                                    }
+                                                    else if (schedule.IsRepeated == true && schedule.Record == false)
+                                                    {
+                                                        <p>
+                                                            @schedule.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span>
+
+                                                        </p>
+                                                    }
+                                                    else if (schedule.IsRepeated == false && schedule.Record == true)
+                                                    {
+                                                        <p>
+                                                            @schedule.EventName <i class="fa fa-video-camera text-danger"></i>
+                                                        </p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>
+                                                            @schedule.EventName
+                                                        </p>
+                                                    }
+                                                </a>
+                                            </td>
+                                            <td scope="row" class="bluepurple font-weight-normal" style="width:90px">@schedule.EventTime.ToString("h:mm tt")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade " id="CurrentSchedules" role="tabpanel" aria-labelledby="home-tab-custom">
+                    <div class="container">
+                        <div class="table-now">
+                            <table class="table table-striped table-sm table-borderless">
+                                <tbody>
+                                    @foreach (var schedule in Model.CurrentSchedule)
+                                    {
+                                        <tr>
+                                            <td scope="row" class="bluepurple font-weight-normal"><b>@schedule.ChurchName, "@schedule.Town</b>"</td>
+                                            <td class="bluepurple">
+                                                <a href="@Url.Action("Profile", "Website",new { id = schedule.Slug })" class="bluepurple">
+
+                                                    @if (schedule.IsRepeated == true && schedule.Record == true)
+                                                    {
+                                                        <p>
+                                                            @schedule.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span> <i class="fa fa-video-camera text-danger"></i>
+                                                        </p>
+                                                    }
+                                                    else if (schedule.IsRepeated == true && schedule.Record == false)
+                                                    {
+                                                        <p>
+                                                            @schedule.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span>
+                                                        </p>
+                                                    }
+                                                    else if (schedule.IsRepeated == false && schedule.Record == true)
+                                                    {
+                                                        <p>
+                                                            @schedule.EventName <i class="fa fa-video-camera text-danger"></i>
+                                                        </p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>
+                                                            @schedule.EventName
+                                                        </p>
+                                                    }
+                                                </a>
+                                            </td>
+                                            <td scope="row" class="bluepurple font-weight-normal" style="width:90px">@schedule.EventTime.ToString("h:mm tt")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="UpcomingSchedules" role="tabpanel" aria-labelledby="profile-tab-custom">
+                    <div class="container">
+                        <div class="table-now">
+                            <table class="table table-striped table-sm table-borderless">
+                                <tbody>
+                                    @foreach (var schedule in Model.UpcomingSchedule)
+                                    {
+                                        <tr>
+                                            <td scope="row" class="bluepurple font-weight-normal"><b>@schedule.ChurchName, @schedule.Town</b></td>
+                                            <td class="bluepurple">
+                                                <a href="@Url.Action("Profile", "Website",new { id = schedule.Slug })" class="bluepurple">
+
+                                                    @if (schedule.IsRepeated == true && schedule.Record == true)
+                                                    {
+                                                        <p>
+                                                            @schedule.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span> <i class="fa fa-video-camera text-danger"></i>
+                                                        </p>
+                                                    }
+                                                    else if (schedule.IsRepeated == true && schedule.Record == false)
+                                                    {
+                                                        <p>
+                                                            @schedule.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span>
+                                                        </p>
+                                                    }
+                                                    else if (schedule.IsRepeated == false && schedule.Record == true)
+                                                    {
+                                                        <p>
+                                                            @schedule.EventName <i class="fa fa-video-camera text-danger"></i>
+                                                        </p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>
+                                                            @schedule.EventName
+                                                        </p>
+                                                    }
+                                                </a>
+                                            </td>
+                                            <td scope="row" class="bluepurple font-weight-normal" style="width:90px">@schedule.EventTime.ToString("h:mm tt")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-1 d-lg-block d-none"></div>
+</div>
+
+<script>
+    function currentTime() {
+        var systemdate = new Date(); /* creating object of Date class */
+        var ukTime = systemdate.toLocaleString("en-US", { timeZone: 'Europe/London' })
+        var date = new Date(ukTime);
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        var sec = date.getSeconds();
+        var midday = "AM";
+        midday = (hour >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+        hour = (hour == 0) ? 12 : ((hour > 12) ? (hour - 12) : hour); /* assigning hour in 12-hour format */
+        hour = updateTime(hour);
+        min = updateTime(min);
+        sec = updateTime(sec);
+        document.getElementById("clock").innerText = hour + " : " + min + " : " + sec + " " + midday; /* adding time to the div */
+        var t = setTimeout(currentTime, 1000); /* setting timer */
+    }
+
+    function updateTime(k) { /* appending 0 before time elements if less than 10 */
+        if (k < 10) {
+            return "0" + k;
+        }
+        else {
+            return k;
+        }
+    }
+
+    currentTime();
+
+</script>

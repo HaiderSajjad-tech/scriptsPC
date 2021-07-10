@@ -1,0 +1,26 @@
+https://tonyteaches.tech/nginx-multiple-sites/
+
+Reverse Proxy
+https://www.techrepublic.com/article/how-to-use-nginx-as-a-reverse-proxy/
+
+server {
+listen80;
+server_name  haidersaji.tk www.haidersaji.tk;
+
+location / {
+root /var/www/html;   
+index index.html;
+}
+}
+
+
+server {
+
+listen80;
+server_name haidersaji.tk www.haidersaji.tk;
+
+location / {
+
+proxy_pass http://localhost:5000/;
+}
+}

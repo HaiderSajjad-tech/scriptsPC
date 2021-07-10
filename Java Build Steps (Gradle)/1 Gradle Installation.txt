@@ -1,0 +1,27 @@
+Ubuntu Installation
+--------------------------------------------------------------------------------
+apt-get update
+sudo apt install unzip
+sudo apt update
+sudo apt install openjdk-8-jdk
+java -version
+wget https://services.gradle.org/distributions/gradle-6.4.1-bin.zip -P /tmp
+sudo unzip -d /opt/gradle /tmp/gradle-*.zip
+sudo nano /etc/profile.d/gradle.sh
+export GRADLE_HOME=/opt/gradle/gradle-6.4.1
+export PATH=${GRADLE_HOME}/bin:${PATH}
+source /etc/profile.d/gradle.sh
+gradle -v
+--------------------------------------------------------------------------------
+
+Docker Installation
+--------------------------------------------------------------------------------
+RUN FOLLOWING COMMANDS BEFORE USING ABOVE COMMANDS
+
+apt-get update
+apt-get install nano
+
+apt-get update \
+  && apt-get install -y wget \
+  && rm -rf /var/lib/apt/lists/*
+--------------------------------------------------------------------------------

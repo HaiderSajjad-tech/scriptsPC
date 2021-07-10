@@ -1,0 +1,356 @@
+﻿@model MCNMedia_Dev.Models.GenericModel
+@{
+
+}
+
+@if (ViewBag.PartalBit == "-2")
+{
+    <input type="hidden" id="hdnViewPartialBit" value="@ViewBag.PartalBit" />
+
+
+}
+else
+{
+    <input type="hidden" id="hdnViewPartialBit" value="none" />
+}
+<link href="https://vjs.zencdn.net/7.2.3/video-js.css" rel="stylesheet">
+<script src="https://vjs.zencdn.net/ie8/ie8-version/videojs-ie8.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.14.1/videojs-contrib-hls.js"></script>
+<script src="https://vjs.zencdn.net/7.2.3/video.js"></script> 
+<link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" />
+<script src="~/theme/js/modal-demo.js"></script>
+
+<style>
+    .toggle.ios, .toggle-on.ios, .toggle-off.ios {
+        border-radius: 20rem;
+    }
+
+        .toggle.ios .toggle-handle {
+            border-radius: 20rem;
+        }
+</style>
+
+
+<style type="text/css">
+    .vjs-big-play-button {
+        left: 50% !important;
+        top: 50% !important;
+    }
+</style>
+<div class="row mb-3">
+    <div class="col-sm-12">
+        <button type="submit" id="AddCamera1" class="btn btn-outline-behance btn-sm float-right " title=" Add New" onclick="AddCamera()"> <i class="mdi mdi-plus"></i> Add New Camera</button>
+
+    </div>
+</div>
+<div class="row mb-2">
+    <div class=" col-12">
+        <div class="form-group row ">
+            @{ var Counter = 1; }
+            @foreach (var items in Model.LCameras)
+            {
+                <div class="col-sm-6 mb-3">
+                    <div class="card ">
+                        <div class="card-body mb-3 mt-2">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <video id='CameraLiveStream_@Counter' class="video-js vjs-default-skin w-100 " height="280" controls>
+                                        <source id="LiveStreamSrc_@Counter" src="@items.LiveStreamUrl" type="application/x-mpegURL">
+                                    </video>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="row pt-3">
+                                        <div class="col-sm-4   text-wrap border-bottom border-right text-center" id="context-menu-hover-autohideNew2" cameraId="@items.CameraId">
+                                            <label> Camera ID     |</label>
+                                            <i style="color: #1f4a79"></i>&nbsp; @items.CameraId
+                                        </div>
+                                        <div class="col-sm-4    text-wrap border-bottom border-right text-center">
+                                            <i class="mdi mdi-camera " style="color: #1f4a79"></i>&nbsp; @items.CameraName
+                                        </div>
+                                        <input type="hidden" id="hdnCameraId22_@items.CameraId" value="@items.CameraId" />
+                                        <div class="col-sm-4  text-wrap border-bottom text-center">
+                                            <div class="custom-control custom-switch lg">
+                                                <input type="checkbox" class="custom-control-input control" checked="@items.IsCameraLive" onchange="ChangeCameraStatus(@items.CameraId)" id="IsOnlineCamera_@items.CameraId">
+                                                <label class="custom-control-label" for="IsOnlineCamera_@items.CameraId"><span class="text-danger">OFF</span><span>/</span> <span class="text-success">ON</span> </label>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row pt-3">
+                                        <div class="col-sm-4   text-wrap border-bottom border-right text-center">
+                                            <label> RTSP     |</label>
+                                            <i style="color: #1f4a79"></i>&nbsp; @items.RtspPort
+                                        </div>
+                                        <div class="col-sm-4   text-wrap border-bottom border-right text-center">
+                                            <label> HTTP     |</label>
+
+                                            <i style="color: #1f4a79"></i>&nbsp; @items.HttpPort
+
+                                        </div>
+                                        <div class="col-sm-4   text-wrap border-bottom text-center">
+                                            <label> Server     |</label>
+                                            <i style="color: #1f4a79"></i>&nbsp;@items.ServerId
+                                        </div>
+                                    </div>
+                                    <div class="row pt-3">
+                                        <div class="col-sm-6   text-wrap border-bottom border-right text-center">
+                                            <button type="submit" onclick="RevokeCamera(@items.CameraId)" class="btn btn-success btn-sm text-white mb-2" data-toggle="tooltip" data-placement="bottom" title="Refresh"><i class="fa fa-refresh text-white pr-1"></i>Refresh</button>
+
+                                        </div>
+                                        <div class="col-sm-6   text-wrap border-bottom  text-center">
+                                            <label> Status     |</label>
+                                            <label id="CamStatus">
+                                                @if (items.IsCameraStreaming)
+                                                {
+                                                    <i style="color: #1f4a79"></i><span class="text-success"><strong>Active</strong></span>
+                                                }
+                                                else
+                                                {
+                                                    <i style="color: #1f4a79"></i><span class="text-warning"><strong>Waiting</strong></span>
+                                                }
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+
+
+
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+                Counter++;
+            }
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="modal fade" id="AddCameraModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog mt-4" role="document" style="max-width:60%;">
+                <div class="modal-content ">
+                    <div class="modal-header">
+                        <h5 class="modal-title " id="exampleModalLabel">Add Camera </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><i class="fa fa-window-close-o"></i></span>
+                        </button>
+                    </div>
+                    <div class="modal-body " id="AddCameraPreview">
+                        @Html.Partial("~/Views/Camera/_AddCamera.cshtml", Model.Media)
+                    </div>
+                    @*<div class="modal-footer">
+                            <button type="button" class="btn btn-success">Submit</button>
+                            <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable mt-4" role="document" style="max-width:60%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Edit Camera</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><i class="fa fa-window-close-o"></i></span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="Preview">
+                        @Html.Partial("~/Views/Camera/_EditCamera.cshtml", Model.Cameras)
+                    </div>
+                    @*<div class="modal-footer">
+                            <button type="button" class="btn btn-success">Submit</button>
+                            <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/theme/vendors/jquery-contextmenu/jquery.contextMenu.min.js"></script>
+<script src="~/theme/js/CheckCode.js"></script>
+<script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
+<script type="text/javascript">
+    function ChangeCameraStatus(camId) {
+        var cameraID = camId;
+
+        var cameraStatus = $('#IsOnlineCamera_' + cameraID).prop("checked");
+
+
+        var formData = new FormData();
+        formData.append("cameraId", cameraID);
+        formData.append("cameraStatus", cameraStatus);
+
+        $.ajax({
+            type: "POST",
+            url: "/DashBoardClient/ChangeCameraStatus/",
+
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            success: function (response) {
+                if (response.success) {
+                    $(window).scrollTop(0);
+                    $('#addMediaSuccessMessage').removeAttr('hidden');
+                    $('#addMediaSuccessMessage').html('Camera Status Changed successfully');
+                
+
+                    $('#addMediaSuccessMessage').fadeTo(5000, 500).slideUp(500, function () {
+                        $("#addMediaSuccessMessage").slideUp(500);
+                    });
+                    $('#addMediaSuccessMessage').attr('hidden');
+                } else {
+                   
+                    $(window).scrollTop(0);
+                    $('#addMediaErrorMessage').removeAttr('hidden');
+                    $('#addMediaErrorMessage').html(response.responseText);
+                 
+
+                    $('#addMediaErrorMessage').fadeTo(5000, 500).slideUp(500, function () {
+                        $("#addMediaErrorMessage").slideUp(500);
+
+                    });
+                    $('#addMediaErrorMessage').attr('hidden');
+                }
+            },
+            error: function (errormessage) {
+                //alert(errormessage.responseText);
+            }
+        });
+    }
+
+    $('#AddCameraModal').on('hidden.bs.modal', function () {
+        $(this).removeData('#AddCameraModal');
+    });
+
+    function AddCamera() {
+
+        $('#AddCameraModal').modal('show');
+
+    }
+
+    function Open(camId) {
+        $.ajax({
+            type: "Get",
+            url: '@Url.Action("EditCamera", "Camera")',
+            data: { id: camId },
+            success: function (data) {
+                $('#Preview').html(data);
+                $('#EditModal').modal('show');
+            }
+        })
+            }
+
+    function DeleteCamera(camId) {
+        swal({
+  title: "Are you sure?",
+  text: "Once deleted, you will not be able to recover this file!",
+  icon: "warning",
+  buttons: true,
+  dangerMode: true,
+})
+.then((willDelete) => {
+  if (willDelete) {
+
+          $.ajax({
+            url: "/Camera/DeleteCamera/" + camId,
+            type: "POST",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+              success: function (result) {
+                  if (result.success) {
+
+            
+                      $(window).scrollTop(0);
+                      $('#addMediaSuccessMessage').removeAttr('hidden');
+                      $('#addMediaSuccessMessage').html('Camera deleted successfully');
+                      $('#addMediaSuccessMessage').fadeIn();
+
+                      $('#addMediaSuccessMessage').fadeTo(5000, 500).slideUp(500, function () {
+                          $("#addMediaSuccessMessage").slideUp(500);
+                      });
+                      $('#addMediaSuccessMessage').attr('hidden');
+                      window.location.reload();
+                  }
+                  else {
+                      $(window).scrollTop(0);
+                      $('#addMediaErrorMessage').removeAttr('hidden');
+                      $('#addMediaErrorMessage').html(result.responseText);
+                      $('#addMediaErrorMessage').fadeIn();
+
+                      $('#addMediaErrorMessage').fadeTo(5000, 500).slideUp(500, function () {
+                          $("#addMediaErrorMessage").slideUp(500);
+
+                      });
+                      $('#addMediaErrorMessage').attr('hidden');
+                  }
+                 
+    },
+            error: function (errormessage) {
+               // alert(errormessage.responseText);
+            }
+        });
+  } else {
+         swal("Your file is safe!");
+  }
+});
+    }
+
+    // Call on Load
+$(document).ready(function () {
+        var count = '@Model.LCameras.Count()';
+        var i;
+        for ( i= 1; i <= count; i++){
+            var player = videojs('CameraLiveStream_'+i);
+        player.autoplay(false);
+    }
+    if ($('#hdnViewPartialBit').val() == '-2') {
+        $('#EditModal').modal('show');
+
+
+    }
+ });
+
+
+
+    function RevokeCamera(cameraId)
+    {
+        var formData = new FormData();
+        formData.append("cameraId", cameraId);
+
+        $.ajax({
+
+            type: "POST",
+            url: "/Camera/RevokeCamera/",
+
+            data: formData,
+            processData: false,  // tell jQuery not to process the data
+            contentType: false,  // tell jQuery not to set contentType
+
+            success: function (result) {
+                if (result == true) {
+                    document.getElementById("CamStatus").innerHTML  = '<span class="text-success"><strong>Active</strong></span>';
+                }
+                else {
+                    document.getElementById("CamStatus").innerHTML = '<span class="text-warning"><strong>Waiting</strong></span>';
+                }
+            },
+            error: function (errormessage) {
+                //alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+
+
+</script>

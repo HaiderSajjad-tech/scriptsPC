@@ -1,0 +1,175 @@
+﻿@model MCNMedia_Dev.Models.GenericModel
+@{
+
+}
+
+<div class="row m-0 mb-3">
+    <div class="col-lg-12">
+        <div class="alert alert-danger" id="addNoticeErrorMessage">
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- End plugin css for this page -->
+@using (Html.BeginForm("AddNotice", "Notice", FormMethod.Post, new { enctype = "multipart/form-data", @id= "churchAddNotices" }))
+{
+    <div class="row">
+        <div class="col">
+            <form asp-action="Add" class="needs-validation" novalidate>
+                
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group row p-3" id="alertDiv21">
+                    <div class="col-md-12">
+                        <div class="alertNew alert-dangerNew" id="alertLabel21">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Notices.NoticeTitle" class="control-label">Notice Title</label>
+                    <input asp-for="Notices.NoticeTitle" maxlength="100" class="form-control" id="validationCustom13" placeholder=" Notice Title" required />
+                    <span asp-validation-for="Notices.NoticeTitle" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-group">
+                        <label asp-for="Notices.NoticeName" class="control-label">Notice</label>
+
+                        <textarea id="summernote-basic2" asp-for="Notices.NoticeName" placeholder=" Notice " required></textarea>
+
+                        <span asp-validation-for="Notices.NoticeName" class="text-danger"></span>
+
+                    </div>
+                </div>
+
+
+                <div class="form-group float-right">
+
+                    <a onclick="AddNotice1()" class="btn btn-success btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Add"><i class="mdi mdi-content-save text-white"></i>Add</a>
+                    <a id="back" class="btn btn-warning btn-sm text-white " data-dismiss="modal" aria-label="Close" title="Cancle"><i class="fa fa-window-close-o text-white"></i> Cancel</a>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+            $('#alertDiv21').hide();
+        });
+        
+
+        function AddNotice1() {
+            var noticeTitle = document.getElementById('validationCustom13').value;
+            var noticeName = $("#summernote-basic2").summernote('code');
+     
+            var s = "";
+
+
+            if (noticeTitle == '' && (noticeName == '<p><br></p>' || noticeName == '' || noticeName == '<br>')) {
+                $(window).scrollTop(0);
+                $('#validationCustom13').attr('class', 'form-control border-danger');
+                s += '<label>Please Provide a Valid Notice Title </label></br>'
+                $('#summernote-basic2').attr('class', 'border-danger');
+                s += '<label>Please Provide a Valid Notice </label></br>';
+                $('#alertLabel21').html(s);
+                $('#alertDiv21').show();
+                return;
+                $('#AddNoticeModal').modal('show');
+
+
+            }
+            else if ((noticeName == '<p><br></p>' || noticeName == '' || noticeName == '<br>') && noticeTitle != '') {
+                $(window).scrollTop(0);
+                $('#summernote-basic2').attr('class', 'form-control border-danger');
+                s += '<label>Please Provide a Valid Notice</label></br>';
+                $('#alertLabel21').html(s);
+                $('#alertDiv21').show();
+                return;
+                $('#AddNoticeModal').modal('show');
+
+
+            }
+            else if ((noticeName != '<p><br></p>' || noticeName != '' || noticeName !== '<br>') && noticeTitle == '') {
+                $(window).scrollTop(0);
+                $('#validationCustom13').attr('class', 'form-control border-danger');
+                s += '<label>Please Provide a Valid Notice Title </label></br>'
+                $('#alertLabel21').html(s);
+                $('#alertDiv21').show();
+                return;
+                $('#AddNoticeModal').modal('show');
+
+
+            }
+            else { 
+                s = '';
+                $('#alertLabel21').html(s);
+                $('#alertDiv21').hide();
+                $('#AddNoticeModal').modal('hide');
+                $('#churchAddNotices')[0].reset();
+                $('#summernote-basic2').summernote('reset');
+                $('#validationCustom13').attr('class', 'form-control');
+                $('#validationCustom13').attr('style', 'border-color:#c9ccd7');
+            }
+            var formData = new FormData();     
+            formData.append("NoticeTitle", noticeTitle);
+            formData.append("NoticeName", noticeName);
+
+
+            $.ajax({
+                type: "POST",
+                url: "/Notice/AddNotice/",
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+
+
+                success: function (result) {
+                    if (result.success) {
+                        loadNotice();
+
+                        displayBusyIndicator2();
+                        $('#AddNoticeModal').modal('hide');
+                        $('#addMediaSuccessMessage').removeAttr('hidden');
+                        $('#addMediaSuccessMessage').html('Notice added successfully');
+                        $('#addMediaSuccessMessage').fadeIn();
+                        $('#addMediaSuccessMessage').fadeTo(5000, 500).slideUp(500, function () {
+                            $("#addMediaSuccessMessage").slideUp(500);
+                        });
+                        $('#addMediaSuccessMessage').attr('hidden');
+
+                        
+
+                    }
+                    else {
+
+                        $('#addNoticeErrorMessage').removeAttr('hidden');
+                        $('#addNoticeErrorMessage').html(response.responseText);
+                        $('#addNoticeErrorMessage').fadeIn();
+
+                        $('#addNoticeErrorMessage').fadeTo(5000, 500).slideUp(500,
+                            function () {
+                                $("#addNoticeErrorMessage").slideUp(500);
+
+
+                            });
+                        $('#addNoticeErrorMessage').attr('hidden');
+                    }
+                   
+                    
+                },
+                error: function (errormessage) {
+                    //alert(errormessage.responseText);
+                }
+            });
+        }
+    </script>
+}
+
+<!-- Summernote demo -->

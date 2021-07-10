@@ -1,0 +1,15 @@
+CloudWatch
+https://www.youtube.com/watch?v=_Tqce6pGb44
+
+CloudFront
+https://www.youtube.com/watch?v=Vr4N_ZA-uGo
+
+AutoScaling Groups with ELB
+https://www.youtube.com/watch?v=JM1hfA9xBAc (hands-on)
+https://www.youtube.com/watch?v=jvMoWjsP7Pk
+
+Elastic Load Balancer
+https://www.youtube.com/watch?v=OGEZn50iUtE
+
+Route53
+https://www.youtube.com/watch?v=H6_VyaYjTYI

@@ -1,0 +1,13 @@
+
+
+Docker Commands
+------------------------------------------------------------------------
+docker build -t myapache .
+docker run -t -v /home/ubuntu/apacheproject/:/var/www/html/ -d -p 49154:80 image_name
+
+docker exec -it container_id bash
+--------------------------------------------------------------------------
+
+sudo cp -r /home/ubuntu/sampleproject/tempfiles/simpleapp/ /home/ubuntu/sampleproject/simpleapp/
+
+

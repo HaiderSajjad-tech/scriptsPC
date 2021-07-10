@@ -1,0 +1,204 @@
+﻿@model MCNMedia_Dev.Models.GenericModel
+@{
+
+}
+
+@using (Html.BeginForm("AddVideo", "MediaChurch", FormMethod.Post, new { enctype = "multipart/form-data", @id = "AddVideoForm" }))
+{
+
+    <div class="progress progress-lg mt-2">
+        <div id="progress" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
+            <label class="control-label p-2" id="label">0%</label>
+        </div>
+    </div>
+    @*<div class="progress">
+            <div id="progressBardiv" class="Circle Progress Bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
+                <span class="sr-only"></span>
+            </div>
+        </div>*@
+
+    @*<div class="progress progress-lg mt-2">
+            <div class="progress-bar bg-info" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">60%</div>
+        </div>*@
+    <div class="row m-0 mb-3">
+        <div class="col-lg-12">
+            <div class="alert alert-danger" id="addVideoErrorMessage" hidden>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="form-group row p-3" id="alertDiv11">
+        <div class="col-md-12">
+            <div class="alertNew alert-dangerNew" id="alertLabel11">
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <form asp-action="Add">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                @*<input type="hidden" asp-for="Cameras.CameraId" id="CamId" />*@
+
+
+                <div class="form-group">
+                    <label asp-for="Media.TabName" class="control-label">Tab Name</label>
+                    <input asp-for="Media.TabName" class="form-control" id="AddMedVidTabName" />
+                    <span asp-validation-for="Media.TabName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-12">
+                        <input asp-for="Media.MediaURL" class="form-control dropify" id="VidFile" type="file" name="MediaURl3" />
+                        <span asp-validation-for="Media.MediaURL" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group" id="btnAddVideos">
+                    <div class="float-right">
+                        <a onclick="AddVid()" class="btn btn-success btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Add"><i class="mdi mdi-content-save text-white"></i>Add</a>
+                        <a id="back" class="btn btn-warning btn-sm text-white " data-dismiss="modal" aria-label="Close" title="Cancel"><i class="fa fa-window-close-o text-white"></i> Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="~/js/ProgressBar.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#alertDiv11').hide();
+        });
+
+        function AddVid() {
+
+            var ss = '';
+            var progress = 0;
+            var VidTabName = document.getElementById('AddMedVidTabName').value;
+            var formData = new FormData();
+            formData.append("mediaType", "Video");
+            formData.append("AddVidTabName", VidTabName);
+            var input = document.getElementById('VidFile');
+            var fileExtension = ['mp4', 'flv', 'avi'];
+            if ($.inArray($('#VidFile').val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+
+
+                input = "";
+
+
+            }
+            if (input == '' && VidTabName == '') {
+                $('#VidFile').attr('class', 'form-control border-danger');
+                ss += '<label >' + "Only formats are allowed : " + fileExtension.join(', ') + '</label><br/>';
+                $('#AddMedVidTabName').attr('class', 'form-control border-danger');
+                ss += '<label >Please provide a valid Tab Name </label>';
+
+                $('#alertLabel11').html(ss);
+                $('#alertDiv11').show();
+                return;
+                $('#AddddModal').modal('show');
+            }
+            else if (input == '' && VidTabName != '') {
+                $('#VidFile').attr('class', 'form-control border-danger');
+                ss += '<label >' + "Only formats are allowed : " + fileExtension.join(', ') + '</label>';
+
+
+                $('#alertLabel11').html(ss);
+                $('#alertDiv11').show();
+                return;
+                $('#AddddModal').modal('show');
+            }
+            else if (input != '' && VidTabName == '') {
+                $('#AddMedVidTabName').attr('class', 'form-control border-danger');
+                ss += '<label >Please provide a valid Tab Name </label>';
+
+
+                $('#alertLabel11').html(ss);
+                $('#alertDiv11').show();
+                return;
+                $('#AddddModal').modal('show');
+            }
+            else {
+                $('#AddMedVidTabName').attr('class', 'form-control');
+
+                $('#alertDiv11').hide();
+            }
+            $('#btnAddVideos').hide();
+            var fileSize = input.files[0].size / (1024 * 1024);
+
+            formData.append("mediaFile", input.files[0]);
+            //$('#AddddModal').modal('hide');
+            //displayBusyIndicator();
+            startUpdatingProgressIndicator(progress, fileSize);
+            $.ajax({
+                type: "POST",
+                url: "/MediaChurch/AddVideo/",
+
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+
+                //data: { AddVidTabName: AddvidTabName, VidFile11: VidFile1 },
+
+
+                success: function (result) {
+
+                    if (result.success) {
+
+
+
+                        loadVideo();
+                        $('#AddVideoForm')[0].reset();
+                        $('#btnAddVideos').show();
+                        $("#progress").hide();
+                        $('#AddddModal').modal('hide');
+                        $("#progress").css({ width: 0 + "%" });
+                        $("#label").html(0 + "%");
+                        clearDropifyVideo();
+                        $('#addMediaSuccessMessage').removeAttr('hidden');
+                        $(window).scrollTop(0);
+                        $('#addMediaSuccessMessage').html('Video Added Successfully');
+                        $('#addMediaSuccessMessage').fadeIn();
+                        $('#addMediaSuccessMessage').fadeTo(5000, 500).slideUp(500, function () {
+                            $("#addMediaSuccessMessage").slideUp(500);
+                        });
+                        $('#addMediaSuccessMessage').attr('hidden');
+
+                        stopUpdatingProgressIndicator();
+                    }
+                    else {
+                        stopUpdatingProgressIndicator();
+
+                        $('#btnAddVideos').show();
+                        $('#AddddModal').modal('show');
+
+                        $('#addVideoErrorMessage').removeAttr('hidden');
+                        $('#addVideoErrorMessage').html(result.responseText);
+                        $('#addVideoErrorMessage').fadeIn();
+
+                        $('#addVideoErrorMessage').fadeTo(5000, 500).slideUp(500, function () {
+                            $("#addVideoErrorMessage").slideUp(500);
+
+
+                        });
+                        $('#addVideoErrorMessage').attr('hidden');
+                    }
+                },
+                error: function (errormessage) {
+                    //alert(errormessage.responseText);
+                }
+            });
+        }
+        function clearDropifyVideo() {
+            var EventDre = $('#VidFile').dropify();
+            EventDre = EventDre.data('dropify');
+            EventDre.resetPreview();
+            EventDre.clearElement();
+        }
+
+    </script>
+
+
+}

@@ -1,0 +1,84 @@
+Usage
+-------------------------------------------
+https://www.youtube.com/watch?v=pWbMrx5rVBE
+-------------------------------------------
+
+Installation  Commands Ubuntu
+-----------------------------
+sudo apt-get update
+sudo apt-get install mongodb
+sudo apt-get update
+sudo service mongodb start
+-----------------------------
+
+To go to Mongo Shell
+--------------------
+mongo
+--------------------
+
+To show databases
+-----------------
+show dbs
+-----------------
+
+Create and switch to a database
+-------------------------------
+use mycustomers
+-------------------------------
+
+Creating a user
+-------------------------------
+
+db.createUser({
+	user:"brad",
+	pwd:"1234",
+	roles: ["readWrite", "dbAdmin"]
+});
+
+-------------------------------
+
+Create Collection (Table) and Insert/Update data
+-------------------------------
+db.createCollection('customers');
+show collections
+db.customers.insert({first_name:"John", las_name:"Doe"});
+
+db.customers.update({first_name:"John"},{first_name:"John", las_name:"Doe", gender:"male"});
+OR
+db.customers.update({first_name:"John"},{$set:{gender:"female"}});
+-------------------------------
+
+To show documents (records) in collection
+-----------------------------------------
+db.customers.find();
+OR
+db.customers.find().pretty();
+-----------------------------------------
+
+To take dump/backup of a collection
+-----------------------------------------------------------------------------------------
+https://stackoverflow.com/questions/4880874/how-do-i-create-a-mongodb-dump-of-my-database
+
+sudo mongodump --db db_name --out /path_of_your_backup/
+-----------------------------------------------------------------------------------------
+
+To restore database from directory that has .bson file
+------------------------------------------------------
+1)Go to that directory and use following command
+mongorestore backup.bson
+------------------------------------------------------
+
+To rename a database
+--------------------------------------------------------
+use <dbname>
+db.copyDatabase("db_to_rename","db_renamed","localhost")
+use db_to_rename
+db.dropDatabase();
+--------------------------------------------------------
+
+To drop database
+-----------------
+use <dbname>
+db.dropDatabase()
+-----------------
+

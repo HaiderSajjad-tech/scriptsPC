@@ -1,0 +1,175 @@
+﻿
+@model MCNMedia_Dev.Models.GenericModel
+@{
+
+}
+
+@using (Html.BeginForm("AddPicture", "MediaChurch", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", @id = "AddPictureForm" }))
+
+{
+    <div class="row m-0 mb-3">
+        <div class="col-lg-12">
+            <div class="alert alert-danger" id="addPictureErrorMessage" hidden>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="form-group row p-3" id="alertDiv">
+        <div class="col-md-12">
+            <div class="alertNew alert-dangerNew"  id="alertLabel">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            @*<h4 class="card-title">Camera</h4>*@
+
+            <div class="form-group">
+                <label asp-for="Media.TabName" class="control-label">Tab Name</label>
+                @Html.TextBoxFor(model => model.Media.TabName, new { @class = "form-control form-control-sm", @id = "picTabName", @required = "required", @size = "40", @placeholder = "", @vfield = "Y", @nreq = "Y", @maxlength = "60", @nmaxlen = "60", @ntype = "nonNumeric", @nfrom = "register" })
+                @Html.HiddenFor(model => model.Media.ChurchMediaId, new { @id = "ChurchMediaId" })
+                @Html.HiddenFor(model => model.Media.ChurchId, new { @id = "ChurchId" })
+                <div class="invalid-feedback">
+                    Please provide a valid Tab Name.
+                </div>
+            </div>
+
+            <div class="form-group row">
+
+                <div class="col-12">
+                    @Html.TextBoxFor(model => model.Media.MediaURL, new { @class = "form-control form-control-sm dropify", @id = "Picture_Url", @name = "MediaURl3", @type = "file", @required = "required", @size = "40", @placeholder = "", @vfield = "Y", @nreq = "Y", @maxlength = "60", @nmaxlen = "60", @ntype = "nonNumeric", @nfrom = "register" })
+                </div>
+
+            </div>
+
+
+            <div class="float-right">
+                <a onclick="AddPictures()" class="btn btn-success btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Add"><i class="mdi mdi-content-save text-white"></i> Add </a>
+                <a id="back" class="btn btn-warning btn-sm text-white " data-dismiss="modal" aria-label="Close" title="Cancel"><i class="fa fa-window-close-o text-white"></i> Cancel</a>
+            </div>
+
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+     
+        $('#picTabName').attr('class', 'form-control');
+        $('#alertDiv').hide();
+    });
+
+
+
+    function AddPictures() {
+        var s = "";
+        var pictureTabName = document.getElementById('picTabName').value;
+        var formData = new FormData();
+        var input = document.getElementById('Picture_Url');
+        formData.append("mediaType", "Picture");
+        formData.append("AddPicTabName", pictureTabName);
+        var fileExtension = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+        if ($.inArray($('#Picture_Url').val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+
+            input = "";
+
+
+        }
+        if (input == '' && pictureTabName == '' ) {
+            s += '<label >' + "Only formats are allowed : " + fileExtension.join(', ') + '</label><br/>';
+
+            
+            $('#picTabName').attr('class', 'form-control border-danger');
+            s += '<label >Please provide a valid Tab Name </label>';
+
+
+            $('#alertLabel').html(s);
+            $('#alertDiv').show();
+            return;
+            $('#AddModal').modal('show');
+
+        }
+        else if (pictureTabName == '' && input != '' ) {
+            $('#picTabName').attr('class', 'form-control border-danger');
+            s += '<label >Please provide a valid Tab Name </label>';
+
+
+            $('#alertLabel').html(s);
+            $('#alertDiv').show();
+            return;
+            $('#AddModal').modal('show');
+        }
+        else if (pictureTabName != '' && input == '') {
+            $('#picTabName').attr('class', 'form-control border-success');
+            s += '<label >' + "Only formats are allowed : " + fileExtension.join(', ') + '</label><br/>';
+
+
+            $('#alertLabel').html(s);
+            $('#alertDiv').show();
+            return;
+            $('#AddModal').modal('show');
+        }
+        else {
+            $('#alertDiv').hide();
+            $('#picTabName').attr('class', 'form-control');
+        }
+        formData.append("mediaFile", input.files[0]);
+        $('#AddModal').modal('hide');
+        displayBusyIndicator();
+
+        $.ajax({
+            type: "POST",
+            url: "/MediaChurch/AddMedia/",
+            data: formData,
+            processData: false,  // tell jQuery not to process the data
+            contentType: false,  // tell jQuery not to set contentType
+            success: function (result) {
+                
+                if (result.success) {
+                 
+                    displayBusyIndicator2();
+                    loadPicture();
+                    
+                    $('#AddPictureForm')[0].reset();
+                    clearDropifyPicture();
+                    $('#addMediaSuccessMessage').removeAttr('hidden');
+                    $('#addMediaSuccessMessage').html('Picture added successfully');
+                    $('#addMediaSuccessMessage').fadeIn();
+                    $('#addMediaSuccessMessage').fadeTo(5000, 500).slideUp(500, function () {
+                 $("#addMediaSuccessMessage").slideUp(500);
+                    });
+                    $('#addMediaSuccessMessage').attr('hidden');
+                    
+                }
+                else {
+                  
+                    $('#AddModal').modal('show');
+                    $('#addPictureErrorMessage').html(result.responseText);
+                    $('#addPictureErrorMessage').fadeIn();
+
+                    $('#addPictureErrorMessage').fadeTo(5000, 500).slideUp(500, function () {
+                        $("#addPictureErrorMessage").slideUp(500);
+
+
+                    });
+
+                }
+
+
+            },
+            error: function (errormessage) {
+                //alert(errormessage.responseText);
+            }
+        });
+    }
+    function clearDropifyPicture() {
+        var EventDre = $('#Picture_Url').dropify();
+        EventDre = EventDre.data('dropify');
+        EventDre.resetPreview();
+        EventDre.clearElement();
+    }
+</script>

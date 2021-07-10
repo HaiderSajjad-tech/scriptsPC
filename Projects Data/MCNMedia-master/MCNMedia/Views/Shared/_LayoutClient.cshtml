@@ -1,0 +1,327 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    @*<script async src="https://www.googletagmanager.com/gtag/js?id=G-D5LG5TX4PR"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+
+            gtag('config', 'G-D5LG5TX4PR');
+        </script>*@
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>@ViewData["Title"] - MCN</title>
+    <!-- plugins:css -->
+
+    <link rel="stylesheet" href="~/theme/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="~/theme/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="~/theme/vendors/css/vendor.bundle.base.css">
+    <link href="~/theme/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/theme/vendors/jquery-contextmenu/jquery.contextMenu.min.css">
+    <link rel="stylesheet" href="~/theme/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="~/theme/vendors/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css">
+    <link href="~/theme/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+
+
+
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+
+    <link rel="stylesheet" href="~/theme/vendors/owl-carousel-2/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/theme/vendors/owl-carousel-2/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/theme/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="~/theme/vendors/dropify/dropify.min.css">
+    <link rel="stylesheet" href="~/theme/vendors/dropzone/dropzone.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="~/theme/css/horizontal-layout-light/style.css">
+    <!-- endinject -->
+
+    <link href="~/theme/vendors/summernote/dist/summernote-bs4.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="~/theme/images/favicon.png" />
+    <link rel="shortcut icon" href="~/theme/images/favicon.png" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link href="~/theme/Loader.css" rel="stylesheet" />
+    <link href="~/theme/ClientTheme.css" rel="stylesheet" />
+    <link href="~/theme/CustomToggle.css" rel="stylesheet" />
+    @inject IHttpContextAccessor HttpContextAccessor
+    <script>
+    $(function() {
+       // var t = '@HttpContextAccessor.HttpContext.Request.Query["t"]';
+        var t = '@HttpContextAccessor.HttpContext.Session.GetString("ctabId")';
+        if (t.length) {
+            $('cTabList > li').removeClass('nav-clink-active');
+            $('#cTabList a[href="' + t + '"]').addClass("nav-clink-active");
+        }
+    });
+    </script>
+</head>
+<body>
+    @using Microsoft.AspNetCore.Http
+
+    @if (string.IsNullOrEmpty(Context.Session.GetString("UserType")))
+    {
+        Context.Response.Redirect("../UserLogin/UserLogin");
+    }
+    else if (Context.Session.GetString("UserType").ToString() != "client")
+    {
+        Context.Session.Clear();
+        Context.Response.Redirect("../UserLogin/UserLogin");
+    }
+    <div class="container-scroller">
+        <!-- partial:../../partials/_horizontal-navbar.html -->
+        <div class="horizontal-menu">
+            <nav class="navbar top-navbar top-navbar-c col-lg-12 col-12 p-0">
+                <div class="container-fluid">
+                    <div class="col-lg-2">
+                        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
+                            <a class="navbar-brand brand-logo" href="/DashBoardClient/DashBoardClient"><img src="~/theme/images/MCNLogo.svg" alt="logo" /></a>
+                            <a class="navbar-brand brand-logo-mini" href="/Home"><img src="~/theme/images/MCNLogo.svg" alt="logo" /></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 p-0">
+                        <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+                            <ul class="nav page-navigation" id="cTabList">
+                                <li class="nav-item">
+                                    <a class="nav-link nav-clink" href="/DashBoardClient/DashBoardClient">
+                                        @*<i class="fa fa-info-circle menu-icon"></i>*@
+                                        <span class="menu-title">Home</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link nav-clink" href="/Client/ChurchInfo">
+                                        @*<i class="fa fa-info-circle menu-icon"></i>*@
+                                        <span class="menu-title">Church Info</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+
+                                    <a class="nav-link nav-clink" href="/Client/Announcement">
+                                        @*<i class="mdi mdi-bullhorn menu-icon"></i>*@
+                                        <span class="menu-title">Announcement</span>
+                                    </a>
+                                </li>
+                                @*<li class="nav-item">
+                                    <a class="nav-link nav-clink" href="/Client/CameraDetail">
+
+                                        <span class="menu-title">Media</span>
+                                    </a>
+                                </li>*@
+                                <li class="nav-item">
+                                    <a class="nav-link nav-clink" href="/Client/MediaDetail">
+                               
+                                        <span class="menu-title">Media Detail</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link nav-clink" href="/Client/Schedule">
+                                        @*<i class="mdi mdi-calendar-clock menu-icon"></i>*@
+                                        <span class="menu-title">Schedule</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link nav-clink" href="/Client/Recording">
+                                        @*<i class=" mdi mdi-camcorder menu-icon"></i>*@
+                                        <span class="menu-title">Published Files</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link nav-clink" href="/Client/ChurchNewsLetter">
+                                        @*<i class="mdi mdi-calendar-clock menu-icon"></i>*@
+                                        <span class="menu-title">NewsLetter</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link nav-clink" asp-action="ListMobileCamera" asp-controller="Client">
+                                        @*<i class="mdi mdi-calendar-clock menu-icon"></i>*@
+                                        <span class="menu-title">Cameras</span>
+                                    </a>
+                                </li> 
+                                <li class="nav-item">
+                                    <a class="nav-link nav-clink" asp-action="ListDonation" asp-controller="ChurchDonation">
+                                        @*<i class="mdi mdi-calendar-clock menu-icon"></i>*@
+                                        <span class="menu-title">Donation</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+                            <ul class="navbar-nav mr-lg-2">
+                                <li class="nav-item nav-search d-none d-lg-block">
+                                </li>
+                            </ul>
+                            <ul class="navbar-nav navbar-nav-right">
+                                <li class="nav-item nav-profile dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
+                                        <img src="https://via.placeholder.com/40x40" alt="profile" />
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+                                        <span class="dropdown-item border-bottom font-20">
+                                            <i class="ti-user text-primary"></i>
+                                            <span class="font-18 text-primary">
+                                                @Context.Session.GetString("UserName")
+                                            </span>
+                                        </span>
+                                        <a class="dropdown-item" onclick="ChangePassword()" data-toggle="tooltip" data-placement="bottom" title="Change">
+                                            <i class="ti-lock text-primary"></i>
+                                            Change Password
+                                        </a>
+                                        <a class="dropdown-item" asp-action="UserLogin" asp-controller="UserLogin">
+                                            <i class="ti-power-off text-primary"></i>
+                                            Logout
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class=" ml-3">
+                                <a href="/" class="btn btn-sm font-14 font-weight-bolder " target="_blank" style="background-color:white; color:#1f4a79; width:100px">Website<i class="fa fa-globe ml-1" style="background-color:white; color:#1f4a79"></i></a>
+                            </div>
+                            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="horizontal-menu-toggle">
+                                <span class="ti-menu"></span>
+                            </button>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </nav>
+
+        </div>
+        <div class="main-panel bg-light">
+            <div class="content p-4">
+                <div class="container-fluid">
+                    <main role="main">
+                        @Html.Partial("~/Views/Shared/_BusyIndicatoPartial.cshtml")
+
+                        @RenderBody()
+
+                        <div class="row">
+                            <div class="col-12 grid-margin">
+                                <div class="modal fade" id="ChangeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog mt-4" role="document" style="max-width:40%;">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true"><i class="fa fa-window-close-o"></i></span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body " id="Preview">
+
+                                                @Html.Partial("~/Views/UserLogin/ChangeUserPassword.cshtml")
+                                            </div>
+                                            @*<div class="modal-footer">
+                                                    <button type="button" class="btn btn-success">Submit</button>
+                                                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                                                </div>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+        <!-- partial -->
+        <!-- content-wrapper ends -->
+        <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- plugins:js -->
+    <script src="~/theme/vendors/js/vendor.bundle.base.js"></script>
+    <script src="~/theme/vendors/sweetalert/sweetalert.min.js"></script>
+    <!-- endinject -->
+    <script src="~/theme/vendors/dropify/dropify.min.js"></script>
+
+    <!-- endinject -->
+    <!-- DateTimePicker -->
+    <script src="~/theme/vendors/js/vendor.bundle.base.js"></script>
+    <script src="~/theme/vendors/jquery-asColor/jquery-asColor.min.js"></script>
+    <script src="~/theme/vendors/jquery-asGradient/jquery-asGradient.min.js"></script>
+    <script src="~/theme/vendors/jquery-asColorPicker/jquery-asColorPicker.min.js"></script>
+    <script src="~/theme/vendors/moment/moment.min.js"></script>
+    <script src="~/theme/vendors/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.js"></script>
+    <script src="~/theme/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <script src="~/theme/js/formpickers.js"></script>
+    <script src="~/theme/js/dropify.js"></script>
+    <script src="~/theme/vendors/datatables.net/jquery.dataTables.js"></script>
+    <script src="~/theme/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+    <!--End DateTimePicker-->
+    <!-- endinject -->
+    <script src="~/theme/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+
+
+    <script src="~/theme/vendors/jquery-file-upload/jquery.uploadfile.min.js"></script>
+    <script src="~/theme/vendors/dropify/dropify.min.js"></script>
+    <script src="~/theme/vendors/jquery-file-upload/jquery.uploadfile.min.js"></script>
+    <script src="~/theme/vendors/summernote/dist/summernote-bs4.min.js"></script>
+    <!-- endinject -->
+    <script src="~/theme/vendors/summernote/demo.summernote.js"></script>
+    <script src="~/theme/js/CustomToggle.js"></script>
+    @*<script src="~/theme/vendors/jquery-tags-input/jquery.tagsinput.min.js"></script>*@
+    @*<script src="~/theme/vendors/dropzone/dropzone.js"></script>*@
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+
+    <script src="~/theme/js/FormValidation.js"></script>
+    <script src="~/theme/js/off-canvas.js"></script>
+    <script src="~/theme/js/hoverable-collapse.js"></script>
+    <script src="~/theme/js/template.js"></script>
+    <script src="~/theme/js/settings.js"></script>
+    <script src="~/theme/js/todolist.js"></script>
+    <script src="~/theme/vendors/dropify/dropify.min.js"></script>
+    <script src="~/theme/vendors/jquery-contextmenu/jquery.contextMenu.min.js"></script>
+
+
+    <!-- Custom js for this page-->
+    <script src="~/theme/js/data-table.js"></script>
+    <script src="~/theme/js/dropify.js"></script>
+    <script src="~/theme/js/dropzone.js"></script>
+    <script src="~/theme/js/jquery-file-upload.js"></script>
+
+    <script>
+        function displayBusyIndicator() {
+            $('.loading').show();
+        }
+        function displayBusyIndicator2() {
+            $('.loading').hide();
+        }
+        $(window).on('beforeunload', function () {
+            displayBusyIndicator();
+        });
+        $(window).unload(function () {
+            displayBusyIndicator();
+        });
+        s
+        $(document).on('submit', 'form', function () {
+            displayBusyIndicator();
+        });
+        function ChangePassword() {
+
+            $('#ChangeModal').modal('show');
+        }
+    </script>
+
+
+
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <!-- End custom js for this page-->
+</body>
+
+</html>

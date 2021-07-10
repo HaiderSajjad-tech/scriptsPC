@@ -1,0 +1,173 @@
+﻿@model MCNMedia_Dev.Models.GenericModel
+@{
+
+}
+
+<link rel="stylesheet" href="~/theme/vendors/summernote/dist/summernote-bs4.css">
+<link rel="stylesheet" href="~/theme/vendors/quill/quill.snow.css">
+<link rel="stylesheet" href="~/theme/vendors/simplemde/simplemde.min.css">
+<div class="row m-0 mb-3">
+    <div class="col-lg-12">
+        <div class="alert alert-danger" id="addAnnouncementErrorMessage" hidden>
+
+        </div>
+
+    </div>
+
+</div>
+
+<form asp-action="AddAnnouncement" id="churchAddAnnouncement" asp-controller="Announcement" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+    <div class="row">
+        <div class="col">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group row p-3" id="alertDiv22">
+                <div class="col-md-12">
+                    <div class="alertNew alert-dangerNew" role="alert" id="alertLabel22">
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Announcement.AnnouncementTitle" class="control-label">Announcement Title</label>
+                <input asp-for="Announcement.AnnouncementTitle" maxlength="100" class="form-control" id="validationCustom12" placeholder=" Announcement Title" required />
+                <span asp-validation-for="Announcement.AnnouncementTitle" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="form-group">
+                    <label asp-for="Announcement.AnnouncementText" class="control-label">Announcement</label>
+                    <textarea name="description" id="summernote-basic" placeholder=" Announcement" required></textarea>
+
+                    <span asp-validation-for="Announcement.AnnouncementText" class="text-danger"></span>
+
+                </div>
+            </div>
+
+            <div class="form-group float-right">
+
+
+                <a onclick="Addannouncement()" class="btn btn-success btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Add"><i class="mdi mdi-content-save text-white"></i>Add</a>
+                <a id="back" class="btn btn-warning btn-sm text-white " data-dismiss="modal" aria-label="Close" title="Cancel"><i class="fa fa-window-close-o text-white"></i> Cancel</a>
+
+
+            </div>
+
+        </div>
+    </div>
+</form>
+<!-- plugin js for this page -->
+<!-- End custom js for this page-->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#alertDiv22').hide();
+    });
+
+    function Addannouncement() {
+
+
+        var announcementTitle = document.getElementById('validationCustom12').value;
+        
+        var announcementText = $("#summernote-basic").summernote('code');
+        var s = "";
+
+
+        if (announcementTitle == '' && (announcementText == '<p><br></p>' || announcementText == '' || announcementText == '<br>')) {
+            $(window).scrollTop(0);
+            $('#validationCustom12').attr('class', 'form-control border-danger');
+            s += '<label>Please Provide a Valid Announcement Title </label></br>'
+            $('#summernote-basic').attr('class', 'border-danger');
+            s += '<label>Please Provide a Valid Announcement</label></br>';
+            $('#alertLabel22').html(s);
+            $('#alertDiv22').show();
+            return;
+            $('#AddAnnouncementPopUp').modal('show');
+
+
+        }
+        else if ((announcementText == '<p><br></p>' || announcementText == '' || announcementText == '<br>') && announcementTitle != '') {
+            $(window).scrollTop(0);
+            $('#summernote-basic').attr('class', 'form-control border-danger');
+            s += '<label>Please Provide a Valid Announcement</label></br>';
+            $('#alertLabel22').html(s);
+            $('#alertDiv22').show();
+            return;
+            $('#AddAnnouncementPopUp').modal('show');
+
+
+        }
+        else if ((announcementText != '<p><br></p>' || announcementText != '' || announcementText !== '<br>') && announcementTitle == '') {
+            $(window).scrollTop(0);
+            $('AddAnnouncementTitle').attr('class', 'form-control border-danger');
+            s += '<label>Please Provide a Valid Announcement Title </label></br>'
+            $('#alertLabel22').html(s);
+            $('#alertDiv22').show();
+            return;
+            $('#AddAnnouncementPopUp').modal('show');
+
+
+        }
+        else {
+            $('#alertLabel22').html('');
+            $('#alertDiv22').hide();
+            $('#AddAnnouncementPopUp').modal('hide');
+            $('#summernote-basic').summernote('reset');
+            $('#churchAddAnnouncement')[0].reset();
+            $('#AddAnnouncementTitle').attr('class', 'form-control');
+            $('#AddAnnouncementTitle').attr('style', 'border-color:#c9ccd7');
+           
+
+        }
+        displayBusyIndicator();
+        var formData = new FormData();
+        formData.append("announceTittle", announcementTitle);
+        formData.append("announceText", announcementText);
+ 
+
+        $.ajax({
+            type: "POST",
+            url: "/Announcement/AddAnnouncement/",
+
+            data: formData,
+            processData: false,  // tell jQuery not to process the data
+            contentType: false,  // tell jQuery not to set contentType
+
+            //data: { AddVidTabName: AddvidTabName, VidFile11: VidFile1 },
+
+
+            success: function (result) {
+                if (result.success) {
+                   
+                    loadAnnouncement();
+                    displayBusyIndicator2();
+                    $('#AddAnnouncementPopUp').modal('hide');
+                    $('#addMediaSuccessMessage').removeAttr('hidden');
+                    $('#addMediaSuccessMessage').html('Announcement Added Successfully');
+                    $('#addMediaSuccessMessage').fadeIn();
+
+                    $('#addMediaSuccessMessage').fadeTo(5000, 500).slideUp(500, function () {
+                        $("#addMediaSuccessMessage").slideUp(500);
+                    });
+                    $('#addMediaSuccessMessage').attr('hidden');
+                }
+                else {
+
+                    displayBusyIndicator2();
+                    $('#addAnnouncementErrorMessage').removeAttr('hidden');
+                    $('#addAnnouncementErrorMessage').html(result.responseText);
+                    $('#addAnnouncementErrorMessage').fadeIn();
+
+                    $('#addAnnouncementErrorMessage').fadeTo(5000, 500).slideUp(500, function () {
+                        $("#addAnnouncementErrorMessage").slideUp(500);
+                    });
+                    $('#addAnnouncementErrorMessage').attr('hidden');
+
+                }
+            },
+            error: function (errormessage) {
+                //alert(errormessage.responseText);
+            }
+        });
+    }
+</script>
+

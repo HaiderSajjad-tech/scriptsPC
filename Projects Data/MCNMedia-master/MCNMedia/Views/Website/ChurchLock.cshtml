@@ -1,0 +1,47 @@
+﻿@using Microsoft.AspNetCore.Http;
+@model MCNMedia_Dev.Models.GenericModel
+@{
+    ViewData["Title"] = "ChurchLock";
+    Layout = "~/Views/Shared/_LayoutWebsite.cshtml";
+}
+
+
+@{
+    TempData.Keep("Slug");
+    TempData.Keep("ChrName");
+}
+
+
+
+
+
+
+<div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="content-wrapper d-flex align-items-center auth lock-full-bg">
+            <div class="row w-100 justify-content-center">
+                <div class="col-lg-8 mx-auto">
+                    <div class="auth-form-transparent text-left p-0 text-center">
+                        <label class="mb-1 pt-4 font-18 font-weight-bolder text-pink " for="examplePassword1"><p>This Camera has been Password Protected.</p> 
+                        <p> Please contact <b> @TempData["ChrName"] </b> for the password for this Camera.</p></label>
+                        <Center>
+                            <form class="pt-5 col-lg-6  " asp-action="ChurchLock" asp-controller="Website" method="post">
+                                <div class="form-group ">
+
+
+
+                                    <input type="password" asp-for="churchLock.Password" name="Password" class="form-control text-center" id="examplePassword1" placeholder="Password">
+                                </div>
+                                <div class="mt-5">
+                                    <button type="submit" class="btn btn-block bg-blue text-white btn-lg font-weight-medium" href="@Url.Action("ChurchLock", "Website")">Unlock</button>
+                                </div>
+                                <br />
+
+                            </form>
+                        </Center>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

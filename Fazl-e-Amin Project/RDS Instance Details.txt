@@ -1,0 +1,15 @@
+database name: mcnmedia_db
+
+Master username: admin
+
+Password:hubsolution123
+ 
+End Point: mcnmedia-database.cluster-cv16e4kwaija.us-east-1.rds.amazonaws.com
+End Point: mcnmedia-database.cluster-cv16e4kwaija.us-east-1.rds.amazonaws.com
+
+Region : N.Virginia
+
+-------------------------------------------
+
+Assalam Alaykum. We have found out that the application itself is crashing under load and not the server. We even removed all middle-agents from the infrastructure and tested 
+the application

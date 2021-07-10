@@ -1,0 +1,3 @@
+In git bash type 
+
+cat mykey.pem

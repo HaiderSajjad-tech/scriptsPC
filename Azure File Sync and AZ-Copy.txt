@@ -1,0 +1,63 @@
+Azure File Sync using File Shares 
+https://adamtheautomator.com/azure-file-sync/
+https://www.youtube.com/watch?v=RZMohYofhbk
+https://www.youtube.com/watch?v=feWI_G-xB8w
+
+Steps
+------------------------------------------------
+
+1) Create a storage account
+2) Make sure Secure File Transfer and Allow Public Blob Access options are enabled
+3) Create a file share in the storage account created earlier
+4) Create a few directories in that file share
+5) In search box, type in File Sync, and create the file sync service
+6) Make sure that the region and resource group of storage account and sync service are the same
+7) Create a sync group and select the earlier created storage account and file share
+8) Once created, go to the sync group to see the cloud-endpoint and server-endpoint
+9) Go to Windows Server 2012(R2)+ machine
+10) Go to the Server Manager and disable Interenet Explorer (IE) Security Configuration
+11) Download and install Azure File Sync Agent
+12) Select Azure Evironment as Azure Cloud
+13) Provide Subscription, Resource Group and Sync Service created earlier and click Register
+14) Go to Sync Service and then Sync Group and verify the server registered in the Registered Servers section
+15) Go to Sync Group and add a server end-point and keep Cloud Tiering and Offline Data Transfer disabled
+16) Provice the sync path destination for the server
+17) Once done, try adding some files and directories in the destination path on the server, these will be created on the file share also
+
+
+
+AZ-Copy
+https://www.youtube.com/watch?v=ZLPQRJZEo_E
+
+AZ-Copy Omit Files
+https://stackoverflow.com/questions/27174093/omit-uploaded-files-with-azcopy
+
+Steps
+-------------------------
+
+1) Download Az-Copy from Microsoft's website and add the .exe file to the Environment Variables
+2) Log in to your Azure tenant using following command
+
+azcopy login --tenant-id "<tenantID>"
+
+3) Create a storage account and a container in it
+
+3) Provide Contributor access to the storage account and Storage Blob Contributor to the logged-in user
+4) Use the following command to copy transfer between source and destination
+
+azcopy copy "C:\local\path" "https://<storage_account_name>.blob.core.windows.net/<container_name>" --recursive=true --overwrite=false
+#--overwrite=ifSourceNewer
+
+5) Make a copy scrip by creating a .cmd file and paste the following code inside
+
+@echo off
+
+:loop
+azcopy copy "D:\dir1\*" "https://mystoreaccount123.blob.core.windows.net/mycontainer" --recursive=true --overwrite=false
+timeout /t 5
+goto loop
+
+PAUSE
+
+
+3) 

@@ -1,0 +1,164 @@
+﻿@model MCNMedia_Dev.Models.GenericModel
+@{
+
+}
+<link href="https://vjs.zencdn.net/7.2.3/video-js.css" rel="stylesheet">
+<script src="https://vjs.zencdn.net/ie8/ie8-version/videojs-ie8.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.14.1/videojs-contrib-hls.js"></script>
+<script src="https://vjs.zencdn.net/7.2.3/video.js"></script>
+
+<style type="text/css">
+    .vjs-big-play-button {
+        left: 5em !important;
+        top: 4em !important;
+    }
+</style>
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMsgPartial))
+{
+
+    <div class="row m-0 mb-3">
+        <div class="col-lg-12">
+            <div class="alert alert-danger">
+                @ViewBag.ErrorMsgPartial
+            </div>
+
+        </div>
+
+    </div>
+
+}
+<div class="row m-0 mb-3">
+    <div class="col-lg-12">
+        <div class="alert alert-danger" id="editCameraErrorMessage" hidden>
+
+        </div>
+
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <video id='CameraLiveStream' class="video-js vjs-default-skin" width="400" height="300" controls>
+            <source id="LiveStreamSrc" type="application/x-mpegURL">
+        </video>
+    </div>
+    <div class="col-sm-6">
+        <form asp-action="Edit" id="EditCameraForm" class="needs-validation" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Cameras.CameraId" id="CamId" />
+            <input type="hidden" asp-for="Cameras.LiveStreamUrl" id="livestreamUrl" />
+            <div class="form-group">
+                <label asp-for="Cameras.CameraName" class="control-label">Tab Name</label>
+                <input asp-for="Cameras.CameraName" class="form-control" id="CamName" required />
+                <div class="invalid-feedback">
+                    Please Provide a Valid Camera Name
+                </div>
+                <span asp-validation-for="Cameras.CameraName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cameras.HttpPort" class="control-label">HTTP Port</label>
+                <input asp-for="Cameras.HttpPort" class="form-control" required />
+                <div class="invalid-feedback">
+                    Please Provide a Valid Http Port
+                </div>
+                <span asp-validation-for="Cameras.HttpPort" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cameras.RtspPort" class="control-label">RTSP Port</label>
+                <input asp-for="Cameras.RtspPort" class="form-control" required />
+                <div class="invalid-feedback">
+                    Please Provide a Valid RTSP Port
+                </div>
+                <span asp-validation-for="Cameras.RtspPort" class="text-danger"></span>
+            </div>
+            <div class="form-group float-right">
+                <a id="EditCameraBtnId" class="btn btn-success btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Update"><i class="mdi mdi-update text-white"> </i>Update</a>
+                @*<button type="submit" value="Add" class="btn btn-primary btn-sm "><i class="fa fa-plus"></i> Update </button>*@
+                <a id="back" class="btn btn-warning btn-sm text-white " data-dismiss="modal" aria-label="Close"><i class="fa fa-chevron-left text-white"></i> Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#EditCameraBtnId").on("click", function (e) {
+            var form = $("#EditCameraForm")[0];
+            var isValid = form.checkValidity();
+            if (!isValid) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            else {
+
+                Openit(CamId.value);
+            }
+            form.classList.add('was-validated');
+            return false; // For testing only to stay on this page
+        });
+    });
+
+    $(document).ready(function () {
+        $('#LiveStreamSrc').attr("src", '' + $('#livestreamUrl').val() + '');
+        var player = videojs('CameraLiveStream');
+        player.autoplay(false);
+    });
+
+    function Openit(camId) {
+
+        var CameraId = $('#CamId').val();
+        var CameraName = $('#CamName').val();
+        var CameraUrl = $('#Cameras_CameraUrl').val();
+        var HttpPort = $('#Cameras_HttpPort').val();
+        var RtspPort = $('#Cameras_RtspPort').val();
+
+        $('#AddCameraModal').modal('hide');
+        displayBusyIndicator();
+
+        $.ajax({
+            type: "POST",
+            url: "/Camera/UpdateCamera/",
+            //data: camObj,
+
+            data: { CameraId: CameraId, CameraName: CameraName, CameraUrl: CameraUrl, HttpPort: HttpPort, RtspPort: RtspPort },
+
+            //   contentType: "application/json;charset=UTF-8",
+            //  dataType: "json",
+            success: function (result) {
+                if (result.success) {
+                    displayBusyIndicator2();
+                    $('#EditCameraForm')[0].reset();
+                    $('#EditCameraForm')[0].reset();
+                    $('#addMediaSuccessMessage').removeAttr('hidden');
+                    $('#addMediaSuccessMessage').html('Camera Updated successfully');
+                    $('#addMediaSuccessMessage').fadeIn();
+                    $('#addMediaSuccessMessage').fadeTo(5000, 500).slideUp(500, function () {
+                        $("#addMediaSuccessMessage").slideUp(500);
+                    });
+                    $('#addMediaSuccessMessage').attr('hidden');
+
+                    window.location.reload();
+
+                }
+                else {
+                    displayBusyIndicator2();
+                    $('#EditCameraForm').modal('show');
+                    $('#editCameraErrorMessage').removeAttr('hidden');
+                    $('#editCameraErrorMessage').html(response.responseText);
+                    $('#editCameraErrorMessage').fadeIn();
+
+                    $('#editCameraErrorMessage').fadeTo(5000, 500).slideUp(500,
+                        function () {
+                            $("#editCameraErrorMessage").slideUp(500);
+
+
+                        });
+                    $('#editCameraErrorMessage').attr('hidden');
+                }
+
+            },
+            error: function (errormessage) {
+                //alert(errormessage.responseText);
+            }
+        });
+    }
+</script>

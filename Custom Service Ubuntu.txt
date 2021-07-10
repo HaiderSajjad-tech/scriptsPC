@@ -1,0 +1,9 @@
+https://www.youtube.com/watch?v=fYQBvjYQ63U&t=97s
+
+https://stackoverflow.com/questions/62039353/how-to-add-environment-variable-dotnet-cli-home-to-net-systemd-service
+
+https://www.fosslinux.com/42796/how-to-auto-execute-linux-startup-scripts-and-commands.htm#:~:text=Enter%20the%20name%20of%20your%20startup%20script%20or,command%20in%20the%20various%20%E2%80%98%20bin%20%E2%80%98%20directories.
+
+
+
+

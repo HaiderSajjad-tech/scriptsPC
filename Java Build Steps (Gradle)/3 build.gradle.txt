@@ -1,0 +1,14 @@
+Make build.gradle file in /Gradledemo
+-------------------------------------
+apply plugin : 'application'
+
+repositories{
+        mavenCentral()
+}
+
+dependencies{
+        compile "joda-time:joda-time:2.2"
+}
+
+mainClassName = 'demo.HelloGradle'		//(demo is the name of the package)
+-------------------------------------

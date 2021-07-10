@@ -1,0 +1,9 @@
+sudo add-apt-repository ppa:certbot/certbot
+
+sudo apt-get update
+
+sudo apt-get install python-certbot-apache
+OR
+sudo apt-get install python3-certbot-apache
+
+sudo certbot --apache -d haidersaji.tk -d www.haidersaji.tk

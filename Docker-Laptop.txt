@@ -1,0 +1,85 @@
+https://www.youtube.com/watch?v=YFl2mCHdv24
+
+Docker Short Course
+https://www.youtube.com/watch?v=pTFZFxd4hOI
+
+Creating Apache server in Docker Container
+https://www.youtube.com/watch?v=zwa--rUbC60
+
+Docker Installation
+------------------------------------------------------------------------
+
+sudo apt-get remove docker docker-engine docker.io containerd runc
+
+sudo apt-get update
+
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+------------------------------------------------------------------------
+
+Docker Commands
+------------------------------------------------------------------------
+docker build -t myapache .
+
+docker run -t -d -P --name mycontainer myapache
+docker run -t -d -p 49154:80 ocap
+docker run -v /doesnt/exist:/foo -w /foo -i -t ubuntu bash
+#docker run -t -v /home/ubuntu/apacheproject/ -d -p 49154:80 myapache
+docker run -t -d -p 49154:80 ocap
+docker run -t -v /home/ubuntu/apacheproject/:/var/www/html/ -d -p 49154:80 myapache
+
+
+
+docker cp index.html <container_id>:/var/www/html
+COPY src/ /var/www/html/
+
+docker rmi -f <image_name>
+docker stop <container_ID>
+docker rm <container_ID>
+
+docker exec -it ubuntu_bash bash
+docker run -it ocap /bin/bash
+
+
+----------------------------------------------------------
+
+Sample Dockerfile for apache container
+--------------------------------------
+
+FROM ubuntu:latest
+MAINTAINER Hadoop Engineering
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update
+RUN apt-get install -y apache2
+RUN mkdir -p /var/lock/apache2
+RUN mkdir -p /var/run/apache2
+
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_PID_FILE /var/run/apache2.pid
+ENV APACHE_RUN_DIR /var/run/apache2
+ENV APACHE_LOCK_DIR /var/lock/apache2
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV LANG C
+
+CMD ["/usr/sbin/apache2","-D","FOREGROUND"]
+EXPOSE 80
+--------------------------------------
+
+http://20.39.40.212:49154

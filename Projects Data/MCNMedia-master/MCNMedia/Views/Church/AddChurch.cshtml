@@ -1,0 +1,255 @@
+﻿@model MCNMedia_Dev.Models.Church
+
+@{
+    ViewData["Title"] = "AddChurch";
+
+}
+<style>
+    .invalidImage {
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 80%;
+        color: #dc3545;
+    }
+</style>
+
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMsgPartial))
+{
+
+    <div class="row m-0 mb-3">
+        <div class="col-lg-12">
+            <div class="alert alert-danger">
+                @ViewBag.ErrorMsgPartial
+            </div>
+
+        </div>
+
+    </div>
+
+}
+<form asp-action="AddChurch" asp-controller="Church" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+    <div class="grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">New Church Information</h4>
+                <div class="form-group row">
+                    <div class="col-sm-6 ">
+                        <div class="form-group row">
+                            <div class="col-sm-12">
+                                <div class="card " id="cardImage">
+                                    <div class="card-body ">
+                                        <div class="form-group">
+                                            <input asp-for="ImageURl" type="file" id="UploadImage" name="ImageURl2" class="form-control  dropify" />
+                                        </div>
+                                        <div class="invalidImage" id="ImageText">
+                                            Please Select a valid Image Image Supported Only jpeg, jpg, png, gif, bmp
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class=" form-group row">
+                            <div class="col-sm-12">
+                                <label asp-for="StaticIP" for="validationCustom08">DNS/StaticIP </label>
+                                <input asp-for="StaticIP" class="form-control" required id="validationCustom08" placeholder="DNS/StaticIP " />
+                                <div class="invalid-feedback">
+                                    Please Provide a valid DNS/StaticIP
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class=" form-group row">
+                            <div class="col-sm-12">
+                                <label asp-for="ChurchName" for="validationCustom01">Church Name</label>
+                                <input asp-for="ChurchName" class="form-control" id="validationCustom01" placeholder="Church Name" required />
+                                <div class="invalid-feedback">
+                                    Please Provide a valid Church Name
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" form-group row">
+                            <div class="col-sm-12">
+                                <label asp-for="ClientTypeId">Client Type </label>
+                                @*<input asp-for="ClientTypeId" class="form-control" />*@
+                                <select asp-for="ClientTypeId" id="select1" class="custom-select" asp-items="@(new SelectList(@ViewBag.ClientTypes,"Value","Text"))" required>
+                                    <option value="" disabled selected>--Select Client--</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please Provide a valid Client Type
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" form-group row">
+                            <div class="col-sm-12">
+                                <label asp-for="Password" for="validationCustom02">Password </label>
+                                <input asp-for="Password" class="form-control" id="validationCustom02" placeholder="Password " />
+                            </div>
+                        </div>
+                        <div class=" form-group row">
+
+                            <div class="col-sm-12">
+
+                                <label asp-for="InstallationDate" for="InstallationDate">Installation Date </label>
+
+                                <div id="datepicker1" class="input-group date datepicker">
+                                    <input type="text" asp-for="InstallationDate" id="InstallationDate" name="InstallationDate" class="form-control" placeholder="Installation Date" required />
+                                    <span class="input-group-addon input-group-append border-left">
+                                        <span class="ti-calendar input-group-text"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Location Details</h4>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <label asp-for="Address" for="validationCustom03">Address</label>
+                            <input asp-for="Address" class="form-control" id="validationCustom03" placeholder="Address " required />
+                            <div class="invalid-feedback">
+                                Please Provide a valid Address
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label asp-for="Town" for="validationCustom04">Town</label>
+                            <input asp-for="Town" class="form-control" id="validationCustom04" placeholder="Town " required />
+                            <div class="invalid-feedback">
+                                Please Provide a valid Town
+                            </div>
+                        </div>
+                        @*</div>
+                            <div class="form-group row">*@
+                        <div class="col-sm-6">
+                            <label asp-for="CountyId" class=" text-center">County</label>
+                            @*<input asp-for="CountyId" class="form-control" />*@
+                            <select asp-for="CountyId" id="select2" class="custom-select" required asp-items="@(new SelectList(@ViewBag.Counties,"Value","Text"))">
+                                <option value="" selected disabled>--Select County--</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please Provide a valid Country
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Contact Details</h4>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <label asp-for="Website" for="validationCustom05">Website</label>
+                            <input asp-for="Website" class="form-control" id="validationCustom05" placeholder="Website " required />
+                            <div class="invalid-feedback">
+                                Please Provide a valid Website
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6">
+                            <label asp-for="EmailAddress" for="validationCustom06">Email Address</label>
+                            <input asp-for="EmailAddress" class="form-control" id="validationCustom06" placeholder="Email Address "  type="email" required />
+                            <div class="invalid-feedback">
+                                Please Provide a valid Email Address
+                            </div>
+                        </div>
+                        @*</div>
+                            <div class="form-group row">*@
+                        <div class="col-sm-6">
+                            <label asp-for="Phone" class=" text-center" for="validationCustom07">Phone</label>
+                            <input asp-for="Phone" class="form-control" id="validationCustom07" placeholder="Phone" type="text" onkeypress="isNumberKey(event)" required />
+                            <div class="invalid-feedback">
+                                Please Provide a valid Phone
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="float-right">
+        <button type="submit" id="ValChurchSubmit" value="Add" class="btn btn-success btn-sm" title="Add"><i class="mdi mdi-content-save "></i> Add </button>
+        <a id="back" class="btn btn-warning btn-sm text-white " data-dismiss="modal" aria-label="Close" title="Back"><i class="fa fa-chevron-left text-white"></i> Back</a>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#ImageText').hide();
+        $(function () {
+            $("#InstallationDate").datepicker({
+                dateformat: 'dd-mmm-yyyy',
+                defaultdate: new date()
+            });
+        });
+        $("#InstallationDate").datepicker().datepicker("setDate", new Date());
+    });
+
+
+    $('#ValChurchSubmit').click(function () {
+        var fileExtension = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+        if ($('#UploadImage').val().length > 0) {
+            if ($.inArray($('#UploadImage').val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                $('#cardImage').attr("class", "card border-danger");
+                $('#ImageText').show();
+                return false;
+            }
+        }
+            else {
+                $('#cardImage').attr("class", "card border-success");
+                $('#ImageText').hide();
+            }
+        }
+    );
+
+    $("#validationCustom07").keypress(function (e) {
+        //if the letter is not digit then display error and don't type anything
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            //display error message
+           
+            return false;
+        }
+    });
+
+    $('#UploadImage').change(function () {
+        var fileExtension = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+        if ($.inArray($('#UploadImage').val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+            $('#cardImage').attr("class", "card border-danger");
+            $('#ImageText').show();
+            return false;
+        }
+        else {
+            $('#cardImage').attr("class", "card border-success");
+            $('#ImageText').hide();
+        }
+    });
+
+    function isNumberKey(evt) {
+        
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

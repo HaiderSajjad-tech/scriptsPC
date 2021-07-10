@@ -1,0 +1,51 @@
+Basic Tutorial
+---------------------------------------------------------------------------
+https://www.dataquest.io/blog/install-and-configure-docker-swarm-on-ubuntu/
+---------------------------------------------------------------------------
+
+Basic Commands
+----------------------------
+
+Initialize Docker Swarm
+---------------------------------------------------------
+docker swarm init --advertise-addr Privare_IP_ManagerNode
+---------------------------------------------------------
+
+Check Node Status
+--------------
+docker node ls
+--------------
+
+Get Docker Swarm Join Token
+------------------------------
+docker swarm join-token worker
+------------------------------
+
+Run Apache service on connected Nodes
+--------------------------------------------------------------------
+docker service create --name NAME-SERVICE-YOUR-CHOICE -p 80:80 httpd
+
+OR WITH VOLUME ATTACHED
+
+docker service create --name NAME-SERVICE-YOUR-CHOICE -p 80:80 --mount type=volume,source=VOLUME-NAME,destination=/path/in/container,volume-label="color=red",volume-label="shape=round" httpd
+--------------------------------------------------------------------
+
+Delete a Service
+----------------------------
+docker service rm NAME-SERVICE
+----------------------------
+
+Check the services running in Swarm
+-----------------------------------
+docker service ls
+-----------------------------------
+
+Scale Up or Scale Down
+--------------------------------
+docker service scale SERVICE-NAME=2
+--------------------------------
+
+To check the status of a specific service
+------------------------------------------
+docker service ps NAME-SERVICE-YOUR-CHOICE
+------------------------------------------

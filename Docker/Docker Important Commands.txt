@@ -1,0 +1,27 @@
+
+Docker Commands
+------------------------------------------------------------------------
+docker build -t myapache .
+
+docker run -t -d -P --name mycontainer myapache
+docker run -t -d -p 49154:80 ocap
+docker run -v /doesnt/exist:/foo -w /foo -i -t ubuntu bash
+#docker run -t -v /home/ubuntu/apacheproject/ -d -p 49154:80 myapache
+docker run -t -d -p 49154:80 --name MCONTAINER_NAME IMAGE_NAME
+docker run -t -v /home/ubuntu/apache-docker/:/var/www/html/ -d -p 49154:80 image_name
+
+
+
+docker cp index.html <container_id>:/var/www/html
+COPY src/ /var/www/html/
+
+docker rmi -f <image_name>
+docker stop <container_ID>
+docker rm <container_ID>
+
+docker exec -it container_id bash
+docker run -it ocap /bin/bash
+
+
+----------------------------------------------------------
+

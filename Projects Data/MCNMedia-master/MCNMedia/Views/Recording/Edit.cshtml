@@ -1,0 +1,135 @@
+﻿@model MCNMedia_Dev.Models.Recording
+
+@{
+    ViewData["Title"] = "Edit";
+
+}
+
+
+
+
+<form asp-action="Edit" asp-controller="Recording" id="CertForm" method="post" class="needs-validation" novalidate>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="card">
+        <div class="card-body">
+
+
+            <input type="hidden" asp-for="RecordingId" />
+
+            <div class="form-group row">
+                <label asp-for="RecordingTitle" for="validationCustom07" class="col-sm-3 col-form-label"> Recording Title</label>
+                <div class="col-sm-9">
+                    <span asp-validation-for="RecordingTitle" class="text-danger"></span>
+                    <input asp-for="RecordingTitle" class="form-control" id="validationCustom07" placeholder="Recording Title" required />
+                    <div class="invalid-feedback">
+                        Please Provide a Valid Record Title
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="form-group row">
+                <label asp-for="RecordingURl" for="validationCustom08" class="col-sm-3 col-form-label">Recording URl </label>
+                <div class="col-sm-9">
+                    <span asp-validation-for="RecordingURl" class="text-danger"></span>
+                    <input asp-for="RecordingURl" class="form-control" id="validationCustom08" placeholder="Recording URL" required />
+                    <div class="invalid-feedback">
+                        Please Provide a valid Recording URl
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label asp-for="ChurchId" class="col-sm-3 col-form-label">Church</label>
+                <div class="col-sm-9">
+                    <span asp-validation-for="ChurchId" class="text-danger"></span>
+                    <select asp-for="ChurchId" id="select1" class="custom-select" asp-items="@(new SelectList(@ViewBag.Church ,"Value","Text"))">
+                        <option value="0" selected disabled>--Select Church--</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please Provide a valid Church
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label asp-for="Date" class="col-sm-3 col-form-label">Date</label>
+                <div class="col-sm-3">
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                    <div id="datepicker4" class="input-group date datepicker">
+                        <input asp-for="Date" type="text" class="form-control" placeholder="Recording Date" required>
+                        <span class="input-group-addon input-group-append border-left">
+                            <span class="ti-calendar input-group-text"></span>
+                        </span>
+                    </div>
+                    <div class="invalid-feedback">
+                        Please Provide a valid Date
+                    </div>
+                </div>
+
+                <label asp-for="Time" for="default-picker" class="col-sm-3 col-form-label text-center">Time</label>
+                <div class="col-sm-3">
+                    <span asp-validation-for="Time" class="text-danger"></span>
+                    <div class="input-group date" id="timepicker-example" data-target-input="nearest">
+                        <div class="input-group" data-target="#timepicker-example" data-toggle="datetimepicker">
+                            <input asp-for="Time" type="text" class="form-control datetimepicker-input" data-target="#timepicker-example" placeholder="Recording Time" required />
+                            <div class="input-group-addon input-group-append"><i class="ti-time input-group-text"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="invalid-feedback">
+                    Please Provide a valid Time
+                </div>
+            </div>
+            <div class="form-group row">
+                <label asp-for="Password" class="col-sm-3 col-form-label">Password</label>
+                <div class="col-sm-4 ">
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                    <input type="text" asp-for="Password" class="form-control" placeholder="Password" />
+
+                </div>
+                <div class="col-sm-5">
+                    <div class="float-right">
+                        <button type="submit" id="valUpdateButton" value="Update" class="btn btn-success  btn-sm text-white" title="Update"><i class="mdi mdi-update text-white"></i> Update</button>
+                        <button type="button" class="btn btn-warning  btn-sm text-white" data-dismiss="modal" aria-label="Close" title="Back"><i class="fa fa-chevron-left"></i> Back</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+
+    $(function () {
+        $("#valUpdateButton").on("click", function (e) {
+            var form = $("#CertForm")[0];
+            var isValid = form.checkValidity();
+            if (!isValid) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            else {
+
+                return true;
+            }
+            form.classList.add('was-validated');
+            return false; // For testing only to stay on this page
+        });
+    });
+
+    $(function () {
+        $("#datepicker4").datepicker({
+            autoclose: true,
+            todayHighlight: true
+        });
+    });
+
+
+
+
+    $('#timepicker-example').datetimepicker({
+        datepicker: false,
+        format: 'hh:mm A'
+    });
+</script>

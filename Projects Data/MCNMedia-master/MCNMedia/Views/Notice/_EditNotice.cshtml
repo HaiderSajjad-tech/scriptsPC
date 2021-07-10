@@ -1,0 +1,191 @@
+﻿@model MCNMedia_Dev.Models.GenericModel
+@{
+
+}
+
+<!-- Plugin css for this page -->
+<link rel="stylesheet" href="~/theme/vendors/summernote/dist/summernote-bs4.css">
+<link rel="stylesheet" href="~/theme/vendors/quill/quill.snow.css">
+<link rel="stylesheet" href="~/theme/vendors/simplemde/simplemde.min.css">
+<!-- End plugin css for this page -->
+
+<div class="row m-0 mb-3">
+    <div class="col-lg-12">
+        <div class="alert alert-danger" id="editNoticesErrorMessage" hidden>
+
+        </div>
+
+    </div>
+
+</div>
+@using (Html.BeginForm("UpdateNotice", "Notice", FormMethod.Post, new { enctype = "multipart/form-data", @id= "churchEditNotices" }))
+{
+
+
+    <div class="row">
+        <div class="col">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group row p-3" id="alertDiv61">
+                    <div class="col-md-12">
+                        <div class="alertNew alert-dangerNew" id="alertLabel62">
+
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" asp-for="Notices.ChurchNoticeId" id="chNoticeId" />
+                <div class="form-group">
+                    <label asp-for="Notices.NoticeTitle" class="control-label">Title</label>
+                    <input asp-for="Notices.NoticeTitle" maxlength="100" class="form-control" id="editnoticeTitle" />
+                    <span asp-validation-for="Notices.NoticeTitle" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Notices.NoticeName" class="control-label">Notice</label>
+
+
+                    <textarea id="summernoteExample" asp-for="Notices.NoticeName"></textarea>
+
+                    <span asp-validation-for="Notices.NoticeName" class="text-danger"></span>
+
+                </div>
+                <div class="form-group float-right">
+                    <a onclick="UpdateNotice()" class="btn btn-success btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Update"><i class="mdi mdi-update text-white"></i>Update</a>
+                    <a id="back" class="btn btn-warning btn-sm text-white " data-dismiss="modal" aria-label="Close" title="Back"><i class="fa fa-chevron-left text-white"></i> Back</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+            $('#alertDiv61').hide();
+        });
+
+
+        $(document).ready(function () {
+            $('#editNoticeErrorMessage').hide();
+            $('#editNoticeSuccessMessage').hide();
+        });
+
+        function UpdateNotice() {
+
+            var churchNoticeId = $('#chNoticeId').val();
+            var noticeTitle = document.getElementById('editnoticeTitle').value; 
+        
+            var noticeName = $("#summernoteExample").summernote('code');
+           
+            var s = "";
+         
+            if (noticeTitle == '' && (noticeName == '<p><br></p>' || noticeName == '<br>' || noticeName == '')) {
+                $(window).scrollTop(0);
+                $('#editnoticeTitle').attr('class', 'form-control border-danger');
+                s += '<label>Please Provide a Valid Notice Title </label></br>'
+                $('#summernoteExample').attr('class', 'border-danger');
+                s += '<label>Please Provide a Valid Notice </label></br>';
+                $('#alertLabel62').html(s);
+                $('#alertDiv61').show();
+                return;
+                $('#EditNoticeModal').modal('show');
+
+
+            }
+            else if ((noticeName == '<p><br></p>' || noticeName == '<br>' || noticeName == '') && noticeTitle != '') {
+                $(window).scrollTop(0);
+                $('#summernoteExample').attr('class', 'form-control border-danger');
+                s += '<label>Please Provide a Valid Notice</label></br>';
+                $('#alertLabel62').html(s);
+                $('#alertDiv61').show();
+                return;
+                $('#EditNoticeModal').modal('show');
+
+
+            }
+            else if ((noticeName != '<p><br></p>' || noticeName != '<br>' || noticeName !== '') && noticeTitle == '') {
+                $(window).scrollTop(0);
+                $('#editnoticeTitle').attr('class', 'form-control border-danger');
+                s += '<label>Please Provide a Valid Notice Title </label></br>'
+                $('#alertLabel62').html(s);
+                $('#alertDiv61').show();
+                return;
+                $('#EditNoticeModal').modal('show');
+
+
+            } else {
+                s = '';
+                $('#alertLabel62').html(s);
+                $('#alertDiv61').hide();
+                $('#EditNoticeModal').modal('hide');
+                $('#churchEditNotices')[0].reset();
+                $('#editnoticeTitle').attr('class', 'form-control');
+                $('#editnoticeTitle').attr('style','border-color:#c9ccd7');
+            }
+
+            var formData = new FormData();
+            formData.append("ChurchNoticeId", churchNoticeId);
+            formData.append("NoticeTitle", noticeTitle);
+            formData.append("NoticeName", noticeName);
+
+            $.ajax({
+                type: "POST",
+                url: "/Notice/UpdateNotice/",
+
+                data: formData,
+                processData: false,  // tell jQuery not to process the data
+                contentType: false,  // tell jQuery not to set contentType
+
+                success: function (result) {
+                    if (result.success) {
+                        loadNotice();
+                      
+                        $('#EditCameraForm')[0].reset();
+                        $('#EditNoticeModal').modal('hide');
+                        $('#addMediaSuccessMessage').removeAttr('hidden');
+                        $('#addMediaSuccessMessage').html('Notice Updated successfully');
+                        $('#addMediaSuccessMessage').fadeIn();
+                        $('#addMediaSuccessMessage').fadeTo(5000, 500).slideUp(500, function () {
+                            $("#addMediaSuccessMessage").slideUp(500);
+                        });
+                        $('#addMediaSuccessMessage').attr('hidden');
+
+                      
+
+                    }
+                    else {
+                       
+                       
+                       
+                        $('#editNoticesErrorMessage').removeAttr('hidden');
+                        $('#editNoticesErrorMessage').html(response.responseText);
+                        $('#editNoticesErrorMessage').fadeIn();
+
+                        $('#editNoticesErrorMessage').fadeTo(5000, 500).slideUp(500,
+                            function () {
+                                $("#editNoticesErrorMessage").slideUp(500);
+
+
+                            });
+                        $('#editNoticesErrorMessage').attr('hidden');
+                    }
+                                   },
+
+                error: function (errormessage) {
+                    //alert(errormessage.responseText);
+                }
+            });
+        }
+
+
+    </script>
+}
+
+<script src="~/theme/vendors/summernote/dist/summernote-bs4.min.js"></script>
+<script src="~/theme/vendors/tinymce/tinymce.min.js"></script>
+<script src="~/theme/vendors/quill/quill.min.js"></script>
+<script src="~/theme/vendors/simplemde/simplemde.min.js"></script>
+<!-- End plugin js for this page -->
+<!-- Custom js for this page-->
+<script src="~/theme/js/editorDemo.js"></script>
+<!-- End custom js for this page-->

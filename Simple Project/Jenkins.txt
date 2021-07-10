@@ -1,0 +1,51 @@
+https://www.youtube.com/watch?v=p7-U1_E_j3w
+
+Pipeline with GitHub
+-----------------------
+https://www.youtube.com/watch?v=Z3S2gMBUkBo
+
+ssh servers in Jenkins
+-----------------------
+https://www.youtube.com/watch?v=a_AOTn7FQUM
+-----------------------
+
+Adding remotes server in Jenkins for Publish over SSH
+-----------------------
+https://linuxtechlab.com/how-to-easily-add-ssh-credentials-on-jenkins-server/
+-----------------------
+
+Installation
+-----------------------
+https://www.digitalocean.com/community/tutorials/how-to-install-jenkins-on-ubuntu-18-04
+
+sudo apt update
+sudo apt install openjdk-8-jdk
+
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt update
+sudo apt install jenkins
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+
+
+apt-get install sshpass
+-----------------------
+
+GitHub WebHook for Jenkins
+--------------------------
+http://52.190.4.154:8080/github-webhook/
+--------------------------
+
+Git Global Configuration Variables
+--------------------------
+git config --global user.name "HaiderSajjad-tech"
+git config --global user.email "haider.sajjad1888@gmail.com"
+--------------------------
+
+Sampe Build Steps
+-----------------------
+cd /var/www/
+sudo git clone https://github.com/HaiderSajjad-tech/jkdemo.git
+sudo cp /var/www/jkdemo/index.html /var/www/html/
+-----------------------

@@ -1,0 +1,290 @@
+﻿@model MCNMedia_Dev.Models.GenericModel
+@using System.Web;
+@{
+    ViewData["Title"] = "ManageUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card mb-3">
+    <div class="card-header card-header-custom">
+        Search User
+    </div>
+    @if (ViewBag.PartalBit == "-1")
+    {
+        <input type="hidden" id="hdnViewPartialBit" value="@ViewBag.PartalBit" />
+
+
+    }
+    
+    @if (ViewBag.PartalBit == "-2")
+    {
+        <input type="hidden" id="hdnViewPartialBit" value="@ViewBag.PartalBit" />
+
+
+    }
+
+    else
+    {
+        <input type="hidden" id="hdnViewPartialBit" value="none" />
+    }
+    <div class="card-body">
+        <div class="">
+            <form method="post" asp-action="Search" asp-controller="user">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">First Name</label>
+                            <div class="col-sm-8">
+                                @Html.TextBox("FirstName", "", new { @class = "form-control", @placeholder = "Enter First Name" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Last Name</label>
+                            <div class="col-sm-8">
+                                @Html.TextBox("LastName", "", new { @class = "form-control", @placeholder = "Enter Last Name" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Email Address</label>
+                            <div class="col-sm-8">
+                                @Html.TextBox("EmailAddress", "", new { @class = "form-control", @placeholder = "Enter Email Address" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Role </label>
+                            <div class="col-sm-8">
+                                <select id="ddlRoleSearch" name="Role" class="form-control">
+                                    <option value="-1">All</option>
+                                    <option value="1">Admin</option>
+                                    <option value="2">Client</option>
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <div class="col-sm-4 col-form-label"><label></label></div>
+                            <div class="col-sm-8">
+                                <button type="submit" class="btn btn-primary btn-sm" title="Search"><i class="mdi mdi-table-search"></i> Search</button>
+                                <a asp-controller="User" asp-action="ListUser" class="btn btn-warning btn-sm text-white" title="Cancel"><i class="mdi mdi-cancel text-white"></i>Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header card-header-custom">
+        <button id="AddUser" onclick="OpenPopup_AddUser()" class="btn btn-outline-warning btn-custom btn-sm float-right " title="Add New"> <i class="mdi mdi-plus"></i> Add User</button>
+        Manage Users
+    </div>
+    <div class="card-body">
+        <div class="">
+            <form method="get">
+
+                <div id="order-listing_wrapper" class="dt-bootstrap4 no-footer">
+
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="order-listing" class="table dataTable no-footer" role="grid" hidden>
+                                <thead>
+                                    <tr>
+                                        <th class="sortStyle">Name</th>
+                                        <th class="sortStyle">Email Address</th>
+                                        <th class="sortStyle">Assigned Churches</th>
+                                        <th class="sortStyle">Role</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.LUsers)
+                                    {
+                                        <tr>
+                                            @*<td>
+                                                    @Html.DisplayFor(modelItem => item.UserId)
+                                                </td>*@
+                                            <td class="text-wrap">
+                                                @Html.DisplayFor(modelItem => item.UserName, new { @class = "text-wrap" })
+                                                @Html.HiddenFor(modelItem => item.UserId, new { @class = "text-wrap", @id = "hdnUserId" })
+                                            </td>
+                                            <td class="text-wrap">
+                                                @Html.DisplayFor(modelItem => item.EmailAddress, new { @class = "text-wrap" })
+                                            </td>
+                                            <td class="text-wrap">
+                                                @{
+                                                    var Church = item.ChurchName.ToString();
+                                                    var Name = Church.Split("|");
+
+                                                    foreach (string churchName in Name)
+                                                    {
+                                                        <label class="text-wrap">@churchName</label>
+                                                        <br />
+                                                    }
+                                                }
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.RoleName)
+                                            </td>
+                                            <td>
+                                                @if (item.RoleName == "Admin")
+                                                {
+                                                    <a class="btn btn-warning btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Assign Churches To User"><i class="mdi mdi-church"></i></a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@Url.Action("EditAssignChurchesUser", "UserAssignChurches", new { id=item.UserId})" class="btn btn-warning btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Assign Churches To User"><i class="mdi mdi-church"></i></a>
+
+                                                }
+                                                <a onclick="EditUserClick(@item.UserId)" id="editbutton" class="btn btn-primary btn-sm text-white" data-placement="bottom" title="Edit"><i class="fa fa-edit"></i></a>
+                                                <a onclick="DeleteUserClick(@item.UserId)" class="btn btn-danger btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fa fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="modal fade" id="AddUserPopUp" tabindex="-2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable mt-4" role="document" style="max-width:60%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><i class="fa fa-window-close-o"></i></span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="AddUserPreview">
+                        @Html.Partial("~/Views/User/AddUser.cshtml", Model.Users)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="modal fade" id="EditUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable mt-4" role="document" style="max-width:60%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><i class="fa fa-window-close-o"></i></span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="EditUserPreview">
+                        @Html.Partial("~/Views/User/Edit.cshtml", Model.Users)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function EditUserClick(userId) {
+        $.ajax({
+            type: "Get",
+            url: '@Url.Action("Edit", "User")',
+            data: { id: userId },
+            success: function (data) {
+                $('#EditUserPreview').html(data);
+                $('#EditUserModal').modal('show');
+            }
+        });
+
+    }
+    function DeleteUserClick(id) {
+
+        swal({
+  title: "Are you sure?",
+  text: "Once deleted, you will not be able to recover this imaginary file!",
+  icon: "warning",
+  buttons: true,
+  dangerMode: true,
+})
+.then((willDelete) => {
+  if (willDelete) {
+
+      window.location.href = '/User/Delete/' + id;
+  } else {
+         swal("Your file is safe!");
+  }
+});
+
+
+    }
+
+    function OpenPopup_AddUser() {
+        $('#AddUserPopUp').modal('show');
+    }
+
+    $(document).ready(function () {
+        var UserTpe = '@ViewBag.UserType';
+        $('#ddlRoleSearch').val(UserTpe);
+        $("#AddUser").on("click", function (e) {
+            var url = $(this).attr('href');
+            $("#dialog-edit").dialog({
+                title: 'Add New User',
+                autoOpen: false,
+                resizable: false,
+                height: 455,
+                width: 550,
+                show: { effect: 'drop', direction: "up" },
+                modal: true,
+                draggable: true,
+                open: function (event, ui) {
+                    $(this).load(url);
+
+                },
+                close: function (event, ui) {
+                    $(this).dialog('close');
+                }
+            });
+
+            $("#dialog-edit").dialog('open');
+            return false;
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#order-listing').removeAttr('hidden');
+        if ($('#hdnViewPartialBit').val() == '-1') {
+            $('#AddUserPopUp').modal('show');
+
+
+        }
+        if ($('#hdnViewPartialBit').val() == '-2') {
+            $('#EditUserModal').modal('show');
+
+
+        }
+    });
+
+
+</script>

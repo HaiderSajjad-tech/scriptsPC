@@ -1,0 +1,184 @@
+﻿@model MCNMedia_Dev.Models.GenericModel
+@{
+}
+
+
+<!-- Plugin css for this page -->
+<!-- End plugin css for this page -->
+
+<link rel="stylesheet" href="~/theme/vendors/summernote/dist/summernote-bs4.css">
+<link rel="stylesheet" href="~/theme/vendors/quill/quill.snow.css">
+<link rel="stylesheet" href="~/theme/vendors/simplemde/simplemde.min.css">
+
+<div class="row m-0 mb-3">
+    <div class="col-lg-12">
+        <div class="alert alert-danger" id="editAnnouncementErrorMessage">
+
+        </div>
+
+    </div>
+
+</div>
+<div class="row">
+    <div class="col">
+        <form asp-action="Edit" id="churchEditAnnouncement">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group row p-3" id="alertDiv71">
+                <div class="col-md-12">
+                    <div class="alertNew alert-dangerNew" role="alert" id="alertLabel72">
+
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" asp-for="Announcement.ChurchAnnouncementId" id="chAnnoId" />
+
+            <div class="form-group">
+                <label asp-for="Announcement.AnnouncementTitle" class="control-label">Announcement Title</label>
+                <input asp-for="Announcement.AnnouncementTitle" maxlength="100" class="form-control" id="editAnnouncementTitle" />
+                <span asp-validation-for="Announcement.AnnouncementTitle" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Announcement.AnnouncementText" class="control-label">Announcement Text</label>
+                @*<input asp-for="Announcement.AnnouncementText" class="form-control" id="editAnnouncementText" />*@
+                <textarea id="tinyMceExample" asp-for="Announcement.AnnouncementText"></textarea>
+                <span asp-validation-for="Announcement.AnnouncementText" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group float-right">
+                <a onclick="UpdateAnnouncement()" class="btn btn-success btn-sm text-white" data-toggle="tooltip" data-placement="bottom" title="Update"><i class="mdi mdi-update text-white"></i>Update</a>
+                <a id="back" class="btn btn-warning btn-sm text-white " data-dismiss="modal" aria-label="Close" title="Back"><i class="fa fa-chevron-left text-white"></i> Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#alertDiv71').hide();
+    });
+
+    $(document).ready(function () {
+
+        $('#editAnnouncementErrorMessage').hide();
+            });
+    function UpdateAnnouncement() {
+
+        var churchAnnounceId = $('#chAnnoId').val();
+        var editAnnounceTitle = $('#editAnnouncementTitle').val();
+        var editAnnounceText = tinymce.get("tinyMceExample").getContent(); 
+      
+        var s = "";
+ 
+        if (editAnnounceTitle == '' && (editAnnounceText == '<p><br></p>' || editAnnounceText == '' || editAnnounceText == '<br>')) {
+            $(window).scrollTop(0);
+            $('#editAnnouncementTitle').attr('class', 'form-control border-danger');
+            s += '<label>Please Provide a Valid Announcement Title </label></br>'
+            $('#tinyMceExample').attr('class', 'border-danger');
+            s += '<label>Please Provide a Valid Announcement</label></br>';
+            $('#alertLabel72').html(s);
+            $('#alertDiv71').show();
+            return;
+            $('#EditAnnouncementModal').modal('show');
+
+
+        }
+        else if ((editAnnounceText == '<p><br></p>' || editAnnounceText == '' || editAnnounceText == '<br>') && editAnnounceTitle != '') {
+            $(window).scrollTop(0);
+            $('#tinyMceExample').attr('class', 'form-control border-danger');
+            s += '<label>Please Provide a Valid Announcement</label></br>';
+            $('#alertLabel72').html(s);
+            $('#alertDiv71').show();
+            return;
+            $('#EditAnnouncementModal').modal('show');
+
+
+        }
+
+        else if ((editAnnounceText !== '<p><br></p>' || editAnnounceText !== '' || editAnnounceText !== '<br>') && editAnnounceTitle == '') {
+            $(window).scrollTop(0);
+            $('editAnnouncementTitle').attr('class', 'form-control border-danger');
+            s += '<label>Please Provide a Valid Announcement Title </label></br>'
+            $('#alertLabel72').html(s);
+            $('#alertDiv71').show();
+            return;
+            $('#EditAnnouncementModal').modal('show');
+
+
+        }
+        else {
+            s = '';
+            $('#alertLabel72').html(s);
+            $('#alertDiv71').hide();
+            $('#EditAnnouncementModal').modal('hide');
+            $('#churchEditAnnouncement')[0].reset();
+            $('#editAnnouncementTitle').attr('class', 'form-control border-light');
+        }
+       
+        displayBusyIndicator();
+        var formData = new FormData();
+        formData.append("churchAnnounceId", churchAnnounceId);
+        formData.append("editAnnounceTitle", editAnnounceTitle);
+        formData.append("editAnnounceText", editAnnounceText);
+
+        $.ajax({
+            type: "POST",
+            url: "/Announcement/UpdateAnnouncement/",
+
+            data: formData,
+            processData: false,  // tell jQuery not to process the data
+            contentType: false,  // tell jQuery not to set contentType
+
+
+            success: function (result) {
+                if (result.success) {
+
+                    loadAnnouncement();
+                    displayBusyIndicator2();
+                    $('#EditAnnouncementModal').modal('hide');
+                    $('#addMediaSuccessMessage').removeAttr('hidden');
+                    $('#addMediaSuccessMessage').html('Announcement Updated Successfully');
+                    $('#addMediaSuccessMessage').fadeIn();
+
+                    $('#addMediaSuccessMessage').fadeTo(5000, 500).slideUp(500, function () {
+                        $("#addMediaSuccessMessage").slideUp(500);
+                    });
+                    $('#addMediaSuccessMessage').attr('hidden');
+                }
+                else {
+                    displayBusyIndicator2();
+
+                    $('#editAnnouncementErrorMessage').removeAttr('hidden');
+                    $('#editAnnouncementErrorMessage').html(result.responseText);
+                    $('#editAnnouncementErrorMessage').fadeIn();
+
+                    $('#editAnnouncementErrorMessage').fadeTo(5000, 500).slideUp(500, function () {
+                    $("#editAnnouncementErrorMessage").slideUp(500);
+                    });
+
+                    $('#editAnnouncementErrorMessage').attr('hidden');
+                }
+              
+                
+            },
+            error: function (errormessage) {
+                //alert(errormessage.responseText);
+            }
+        });
+    }
+
+
+</script>
+
+<script src="~/theme/vendors/summernote/dist/summernote-bs4.min.js"></script>
+<script src="~/theme/vendors/tinymce/tinymce.min.js"></script>
+<script src="~/theme/vendors/quill/quill.min.js"></script>
+<script src="~/theme/vendors/simplemde/simplemde.min.js"></script>
+<!-- End plugin js for this page -->
+<!-- Custom js for this page-->
+<script src="~/theme/js/editorDemo.js"></script>
+
+<!-- Custom js for this page-->
+<!-- End custom js for this page-->

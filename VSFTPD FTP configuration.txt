@@ -1,0 +1,48 @@
+sudo apt-get update
+sudo apt-get install vsftpd
+sudo service vsftpd status
+
+sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.bak
+
+uncomment these:
+write_enable=YES
+chroot_local_user=YES
+local_umask=022
+
+add these:
+force_dot_files=YES
+pasv_min_port=40000
+pasv_max_port=40001
+allow_writeable_chroot=YES
+
+Add following inbound port range on that server
+custom tcp: 40000-40001
+custom tcp: 21
+
+
+sudo systemctl restart vsftpd
+sudo systemctl status vsftpd
+
+in var/www/html
+mkdir carpetcleaningswanley
+
+sudo nano /etc/ssh/sshd_config 
+*in the above file add this in the end of file
+DenyUsers carpet_crawley_ftp
+
+sudo service sshd restart
+sudo service sshd status
+
+Assigning directory to user
+sudo usermod -d /var/www/html/carpetcleaningswanley carpetcleaningswanley
+
+sudo chown -R carpetcleaningswanley:carpetcleaningswanley /var/www/html/carpetcleaningswanley/
+
+ls -l /var/www/html/carpetcleaningswanley/	(to check the ownership of a file)
+           
+
+----------------------------------
+
+User Creation
+sudo adduser carpetcleaningswanley
+pass_phrase@ccs

@@ -1,0 +1,37 @@
+https://www.youtube.com/watch?v=mBhT_MRwGYE
+
+https://www.youtube.com/watch?v=fX3Lh3Y91_M
+
+-------------------------------------------
+
+sudo sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ xenial main" > /etc/apt/sources.list.d/dotnetdev.list'
+
+Installation Links
+-------------------------------------------
+https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu
+-------------------------------------------
+
+Deployment Links
+-------------------------------------------
+https://www.codeproject.com/articles/1137493/run-deploy-asp-net-core-web-applications-on-ubuntu
+-------------------------------------------
+
+Important Link for ubuntu 20.0 LTS installation
+https://dev.to/carlos487/installing-dotnet-core-in-ubuntu-20-04-6jh
+
+
+Steps (Ubuntu 16.0.4 LTS)
+-------------------------------------------
+sudo apt-get update
+wget -q packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb	!!!!!!!!!!!!!!!!!!!
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt-get update
+sudo apt-get install dotnet-sdk-3.1
+--------------------------------------------
+
+dotnet run --urls http://0.0.0.0:5000
+
+
+
+
+

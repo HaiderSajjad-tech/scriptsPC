@@ -1,0 +1,80 @@
+
+First clone the project from Repo
+
+git clone https://gitlab.com/Rashel7/bookingapps-backend.git
+
+------------------------------
+
+sudo a2enmod proxy
+sudo a2enmod proxy_http
+sudo a2enmod proxy_balancer
+sudo a2enmod lbmethod_byrequests
+
+------------------------------
+
+<VirtualHost *:80> 
+  ProxyPreserveHost On
+  ProxyRequests Off
+  ServerName haidersaji.tk
+  ServerAlias www.haidersaji.tk
+  ProxyPass / http://localhost:8080/
+  ProxyPassReverse / http://localhost:8080/
+</VirtualHost>
+
+<VirtualHost *:80> 
+  ServerAdmin yourname@example.com
+  DocumentRoot /var/www/bookingapps-backend/
+	  
+
+</VirtualHost>
+
+
+-------------------------------
+
+In project directory where package.json file is
+npm run start:prod
+OR
+npm run start:prod &
+
+
+to kill this process
+
+pid=$(fuser 8080/tcp 2>/dev/null)
+kill $pid
+-----------------------------
+
+A-Record points to a live IP address
+CNAME points to a fully qulified domain (A-Record)
+
+
+----------------------------
+
+https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-16-04
+
+sudo add-apt-repository ppa:certbot/certbot
+sudo apt-get update
+sudo apt-get install python-certbot-apache
+OR
+sudo apt-get install python3-certbot-apache
+
+sudo certbot --apache -d example.com -d www.example.com
+
+---------------------------
+
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+sudo apt-get install -y nodejs
+sudo apt install npm
+
+sudo npm install
+
+---------------------------
+
+pid=$(fuser 8080/tcp 2>/dev/null)
+kill $pid
+echo "service stopped proccess id ${pid}
+
+---------------------------
+
+In Git Bash in the key dir
+
+cat mykey.pem

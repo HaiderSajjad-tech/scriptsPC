@@ -1,0 +1,105 @@
+1) Create the apache webserver
+2) Login to the server and download the gitlab Runner binarie
+
+sudo curl -L --output /usr/local/bin/gitlab-runner "https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64"
+
+3) Make the downloaded binary executable
+
+sudo chmod +x /usr/local/bin/gitlab-runner
+
+4) Create a GitLab CI/CD user
+
+sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+
+4) Install the binary and run 
+
+sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
+sudo gitlab-runner start
+
+5)  - Register the runner, go to GitLab Repository -> Setings -> CI/CD -> Runners
+    - Disable shared runners
+    - Find Runner URL and Registeration Token
+
+6) Type following command 
+
+sudo gitlab-runner register
+
+7) Provide Runner URL and Registeration Token and Description
+
+8) Leave the tags empty
+
+9) Choose the executor to be Shell
+
+10) Verify the Runner by reloading the CI/CD page, the Runner should be visible there
+
+11) Add no password permission to the GitLab CI/CD user usnig following command
+
+sudo visudo
+gitlab-runner ALL=(ALL) NOPASSWD: ALL
+
+12) Clone the online Repository locally
+
+13) In project root folder, create .gitlab-ci.yml, and copy following code
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+stages:
+    -   deploy
+deploy:
+    stage: deploy
+    script:
+        - echo "Job executed"
+        #- sudo cp index.html /var/www/html/
+        - "cd /var/www/html/ && sudo rm -rf demo-project && sudo git clone https://gitlab.com/haider.sajjad1888/demo-project.git"
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+OR 
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+# Includes deployment pipeline only
+image: alpine:3.7
+stages:
+    - deploy
+    
+before_script:
+  ##
+  ## Optionally, if you will be using any Git commands, set the user name and
+  ## and email.
+  ##
+  #- git config --global user.email "user@example.com"
+  #- git config --global user.name "User name"
+
+deploy_production:
+    stage: deploy
+    before_script:
+        - apk add openssh-client # Add SSH client for alpine 
+        # This is a test change
+        - eval $(ssh-agent -s) # Run the SSH client 
+        # Adding environment's variable SSH_PRIVATE_KEY to the SSH client's agent that manages the private keys
+        - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+        # Create the SSH directory and give it the right permissions
+        - mkdir -p ~/.ssh
+        - chmod 700 ~/.ssh
+    script:
+        # Connecting to the server using SSH and executing commands like pulling updates to the cloned repo
+        - ssh -i ~/.ssh/id_rsa ubuntu@40.114.118.88 "cd /var/www/ && sudo git pull"
+	#- ssh -o StrictHostKeyChecking=no ubuntu@ec2-54-236-179-0.compute-1.amazonaws.com "cd /home/ubuntu/jenkins_deploy/foodapp_backend-master && sudo service foodappsprod stop && sudo git pull && sudo service foodappsprod start"
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+14) Make some changes as required
+
+15) Launch Git Bash
+
+16) Setup Email and Name using following commands
+
+git config --global user.name "Your Name"
+git config --global user.email "youremail@yourdomain.com"
+
+16) Launch Git GUI
+
+17) Rescan the changes and then stage and then commit and then finally push to the online repository
+
+  	
+
+

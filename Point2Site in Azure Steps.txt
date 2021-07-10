@@ -1,0 +1,52 @@
+
+
+----------------------------------------------------
+1) Create a VNET in 
+2) Go to Subnet section of that VNET 
+4) Create Gateway subnet with minimum CIDR block
+5) In search box type Virtual Network Gateway and click on +Add 
+6) Virtual Network Gateway should be in US-East too
+7) Finally create Virtual Network Gateway (takes about 45 minutes to deploy)
+8) In Virtual Network Gatweay, go to Point-to-Site Configuration
+9) Give some Private CIDR block, not more than /24
+10) Launch PowerShell and  type command - Connect-AzAccount
+
+
+
+
+11) In PowerShell create Root Certficate using following command
+
+
+
+$cert = New-SelfSignedCertificate -Type Custom -KeySpec Signature `
+-Subject "CN=P2SRootCert" -KeyExportPolicy Exportable `
+-HashAlgorithm sha256 -KeyLength 2048 `
+-CertStoreLocation "Cert:\CurrentUser\My" -KeyUsageProperty Sign -KeyUsage CertSign
+
+12) In PowerShell create Client certificate using following command
+
+New-SelfSignedCertificate -Type Custom -DnsName P2SChildCert -KeySpec Signature `
+-Subject "CN=P2SChildCert" -KeyExportPolicy Exportable `
+-HashAlgorithm sha256 -KeyLength 2048 `
+-CertStoreLocation "Cert:\CurrentUser\My" `
+-Signer $cert -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.2")
+
+
+
+13) In command prompt type => certmgr.msc
+14) Expand Personal then open Certificates to see if the Root Certificate has been created. And then right click on it and then export it using Base64
+15) Open the Root certificate created in previous step with notepad and copy the content of it and paste it in Public Certificate Data found in Point-to-Site of Virtual Network Gateway
+16) Click save and then download the VPN Client from the portal 
+17) In command prompt type => certmgr.msc to check if the client certificate has been created.
+18) Extract VPN client zip and install the Windows64 bit version, and then from network adapter settings connect to the new vpn adapter
+
+-------------------------------------------------------------------------------------
+
+
+
+Note - Windows SDK must be installed before proceeding
+
+https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/
+
+
+https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-certificates-point-to-site

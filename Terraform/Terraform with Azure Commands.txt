@@ -1,0 +1,86 @@
+1) PowerShell
+Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
+
+2) Azure CLI
+az login
+
+3) Create a folder called terra-practice
+
+4) Create main.tf file as follows
+---------------------------------
+# Configure the Azure provider
+terraform {
+  required_providers {
+    azurerm = {
+      source = "hashicorp/azurerm"
+      version = ">= 2.26"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+
+resource "azurerm_resource_group" "rg" {
+  name     = "terraformlearning"
+  location = "eastus"
+}
+-----------------------------------------
+
+5) Copy main.tf to terra-practice folder
+
+6) In terra-practice folder
+terraform init
+
+7) In terra-practice folder
+terraform plan
+
+8) In terra-practice folder
+terraform apply
+
+9) To destroy plan, in terra-practice folder
+terraform destroy
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://learn.hashicorp.com/tutorials/terraform/azure-build?in=terraform/azure-get-started

@@ -1,0 +1,6 @@
+cd /home/ubuntu/sampleproject/tempfiles/
+sudo rm -rf simpleapp
+sudo git clone https://github.com/HaiderSajjad-tech/simpleapp.git
+sudo cp -r /home/ubuntu/sampleproject/tempfiles/simpleapp/* /home/ubuntu/sampleproject/simpleapp/
+cat /home/ubuntu/sampleproject/simpleapp/index.html
+echo "ALL DONE"

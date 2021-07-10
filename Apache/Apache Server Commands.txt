@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+sudo apt update
+sudo apt install -y apache2
+echo "done" 
+------------------------------------
+sudo mkdir /var/www/mywebsite/
+------------------------------------
+cd /var/www/mywebsite/
+sudo nano index.html
+------------------------------------
+<html>
+<head>
+  <title> Ubuntu rocks! </title>
+</head>
+<body>
+  <p> I'm running this website on an Ubuntu Server server!
+</body>
+</html>
+-------------------------------------
+cd /etc/apache2/sites-available/
+-------------------------------------
+sudo cp 000-default.conf mywebsite.conf
+sudo nano mywebsite.conf
+-------------------------------------
+ServerAdmin yourname@example.com
+DocumentRoot /var/www/mywebsite/
+ServerName www.haidersaji.tk
+-------------------------------------
+sudo a2dissite 000-default.conf
+sudo a2ensite mywebsite.conf
+-------------------------------------
+sudo service apache2 reload
+-------------------------------------

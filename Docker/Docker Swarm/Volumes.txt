@@ -1,0 +1,43 @@
+Create Docker Volume
+------------------------------
+docker volume create VOLUME-NAME
+------------------------------
+
+
+Create Service with created volume
+---------------------------------------------------------------------------------------------------------------------------
+docker service create \
+  --name my-service \
+  --replicas 3 \
+  --mount type=volume,source=VOLUME-NAME,destination=/path/in/container,volume-label="color=red",volume-label="shape=round" \
+  httpd
+---------------------------------------------------------------------------------------------------------------------------
+
+Check existing volumes
+----------------------
+docker volume ls
+----------------------
+
+Inspect a Volume
+--------------------------
+docker inspect VOLUME-NAME
+--------------------------
+
+
+
+
+
+
+
+
+
+
+
+TEMP
+-----------------------
+docker service create \
+  --name my-service \
+  --replicas 3 \
+  --mount type=volume,source=apache-volume,destination=/var/www/html/,volume-label="color=red",volume-label="shape=round" \
+  httpd
+-----------------------

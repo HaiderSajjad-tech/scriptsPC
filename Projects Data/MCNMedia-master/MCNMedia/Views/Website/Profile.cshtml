@@ -1,0 +1,1613 @@
+﻿@model MCNMedia_Dev.Models.Profile
+@{
+    //ViewData["Title"] = "ChurchProfile";
+    Layout = "~/Views/Shared/_LayoutWebsite.cshtml";
+}
+
+@{
+    TempData.Keep("SlugToProfile");
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" />
+
+
+
+<head>
+    <!--Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6VNGNMBZGQ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-6VNGNMBZGQ');
+    </script>
+
+
+    @*<script>
+            (function (i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', 'G-6VNGNMBZGQ', 'auto');
+            ga('send', 'pageview');
+
+        </script>*@
+</head>
+
+<style type="text/css">
+    .vjs-big-play-button {
+        left: 45% !important;
+        top: 45% !important;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.0/assets/owl.theme.default.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.2.0/assets/owl.carousel.css">
+
+<!-- plugins:css -->
+<link rel="stylesheet" href="~/theme/vendors/ti-icons/css/themify-icons.css">
+<link rel="stylesheet" href="~/theme/vendors/css/vendor.bundle.base.css">
+<link rel="stylesheet" href="~/theme/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
+<link rel="stylesheet" href="~/theme/vendors/mdi/css/materialdesignicons.min.css">
+<!-- endinject -->
+<link rel="stylesheet" href="~/theme/vendors/owl-carousel-2/owl.carousel.min.css">
+<link rel="stylesheet" href="~/theme/vendors/owl-carousel-2/owl.theme.default.min.css">
+
+<!-- inject:css -->
+@*<link rel="stylesheet" href="~/theme/css/vertical-layout-light/style.css">*@
+<!-- endinject -->
+
+<link href="https://vjs.zencdn.net/7.2.3/video-js.css" rel="stylesheet">
+<script src="https://vjs.zencdn.net/ie8/ie8-version/videojs-ie8.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.14.1/videojs-contrib-hls.js"></script>
+<script src="https://vjs.zencdn.net/7.2.3/video.js"></script>
+<link href="~/WebsiteAssets/css/style1.css" rel="stylesheet" />
+
+<style>
+    #owl-carousel-video {
+        width: 100%;
+    }
+
+    .item-video {
+        height: 275px !important;
+        background-color: blue;
+        display: block;
+    }
+
+    .wordbreak {
+        overflow-wrap: break-word;
+    }
+    .display-none {
+        display: none !important;
+    }
+
+    .display-block {
+        display: block !important;
+    }
+    .embed-responsive-16by9 {
+        height: 56.25% !important;
+    }
+
+
+    @@media only screen and (min-width: 10px) and (max-width: 850px) {
+        .MobileContent {
+            display: none;
+        }
+    }
+
+        @@media only screen and (min-width: 850px) {
+
+            .ChurchInfoCard {
+                display: none;
+            }
+
+            .LaptopScreenSetup {
+                margin: 3rem !important;
+            }
+
+            .ProfileHeadbar {
+                margin-left: 3rem !important;
+            }
+        }
+
+        @@media only screen and (min-width: 800px) and (max-width: 1400px) {
+
+            .maxWidthTitle {
+                max-width: 25ch;
+            }
+        }
+
+        @@media only screen and (min-width: 1401px) and (max-width: 1501px) {
+
+            .maxWidthTitle {
+                max-width: 27ch;
+            }
+        }
+
+        @@media only screen and (min-width: 1501px) and (max-width: 1600px) {
+
+            .maxWidthTitle {
+                max-width: 28ch;
+            }
+        }
+
+        @@media only screen and (min-width: 1601px) {
+
+            .maxWidthTitle {
+                max-width: 35ch;
+            }
+        }
+
+        @@media only screen and (min-width: 200px) and (max-width: 450px) {
+
+            .maxMobileScreenWidth {
+                max-width: 25ch
+            }
+        }
+
+</style>
+<div class="row m-0 mb-3">
+    <div class="col-lg-12">
+        <div class="alert alert-danger" id="DownloadRecordingErrorMessage" hidden>
+
+        </div>
+
+    </div>
+
+</div>
+<div class="row m-0 mb-3">
+    <div class="col-lg-12">
+        <div class="alert alert-success" id="DownloadRecordingSuccessMessage" hidden>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="content-wrapper">
+    <div class="row m-2">
+        <div class="col-lg-12">
+            <div class="alert alert-danger" id="alertProfile" hidden>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- banner slider start -->
+    <div class="bg-blue pt-2 pb-3 mb-4 text-white font-36">
+
+        <div class="row m-0  ProfileHeadbar pl-xl-0 pl-lg-3  pr-xl-0 pr-lg-3">
+            
+            <div class="col-12">
+                <div class="float-left">
+                    @if (Model.Churches.ChurchId != 0)
+                    {
+                        <span class="float-center">@Model.Churches.ChurchName , @Model.Churches.Town</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <input type="hidden" asp-for="Churches.Slug" id="hfslug" />
+    <input type="hidden" value=@ViewData["slugForlockPage"] id="hfslug" />
+    <div class="arialNova bg-white" id="website-topmenu" style="z-index: 3;">
+        <div class="row m-0 LaptopScreenSetup   pl-xl-0 pl-lg-3  pr-xl-0 pr-lg-3" style="background-color: 1c4776;">
+
+
+            <div class="col-xl-9 col-lg-9  col-md-12 pl-lg-0 pr-md-3 pr-sm-0 col-sm-12 pr-sm-3">
+                <div class="card" id="top-card">
+                    <div class="tab-content" id="pills-tabContent">
+                        @{
+                            int camCounter = 0;
+                            int tabCounter = 0;
+                            string activeClassName = "active";
+                            var videoCount = 0;
+                        }
+                        @if (Model.mediaList != null)
+                        {
+                            @if (Model.mediaList.Count > 0)
+                            {
+                                @foreach (WebsiteMedia webMedia in Model.mediaList)
+                                {
+                                    if (tabCounter > 0)
+                                    {
+                                        activeClassName = "";
+                                    }
+                                    if (webMedia.MediaType == "AdminCamera" || webMedia.MediaType == "ClientCamera")
+                                    {
+                                        if (webMedia.IsCameraStreaming)
+                                        {
+                                            <div class="tab-pane fade show embed-responsive embed-responsive-16by9 @activeClassName " id="pills-@webMedia.MediaType-@tabCounter" role="tabpanel" aria-labelledby="pills-@webMedia.MediaType-tab-@tabCounter">
+                                                <i class="fal fa-play-circle text-white vide-play-in"></i>
+
+                                                <video id='CameraLiveStream-@camCounter' class="video-js vjs-16-9 vjs-default-skin embed-responsive-item" controls>
+                                                    <source id="LiveStreamSrc-@camCounter" src="@webMedia.MediaURL" type="application/x-mpegURL">
+                                                    <track label="English subtitles" kind="subtitles" srclang="en" src="/static/the-web-is-always-changing.vtt" default="">
+                                                </video>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="tab-pane fade show @activeClassName " id="pills-@webMedia.MediaType-@tabCounter" role="tabpanel" aria-labelledby="pills-@webMedia.MediaType-tab-@tabCounter">
+                                                <div class="embed-responsive embed-responsive-16by9 cameralive bg-black tab-pane fade d-flex align-items-center justify-content-center  show active" id="LiveStreamSrc-@tabCounter" role="tabpanel" aria-labelledby="pills-camera-tab-no">
+
+                                                    <p class="text-white font-26 ">
+
+                                                        Our camera is switched off at the moment.
+                                                        <br />
+                                                        Please come back when there is a service scheduled
+                                                    </p>
+
+
+                                                </div>
+                                            </div>
+                                        }
+                                        camCounter++;
+                                    }
+                                    else if (webMedia.MediaType == "Picture")
+                                    {
+                                        <div class="tab-pane fade show @activeClassName embed-responsive embed-responsive-16by9" id="pills-@webMedia.MediaType-@tabCounter" role="tabpanel" aria-labelledby="pills-@webMedia.MediaType-tab-@tabCounter">
+
+                                            <img src="@webMedia.MediaURL" class="d-block vjs-16-9  embed-responsive-item" alt="...">
+
+                                        </div>
+                                    }
+                                    else if (webMedia.MediaType == "SlideShow")
+                                    {
+
+                                        var slideShowImages = Model.MediaChurchList.FindAll(m => m.ChurchMediaId == webMedia.MediaId).ToList();
+                                        var countimages = 0;
+                                        var checkdata = 0;
+                                        var countSliders = 0;
+
+                                        <div class="tab-pane fade show  @activeClassName embed-responsive-16by9" id="pills-@webMedia.MediaType-@tabCounter" role="tabpanel" aria-labelledby="pills-@webMedia.MediaType-tab-@tabCounter">
+
+                                            <div id="demoslideshow-@webMedia.MediaId" class="carousel slide embed-responsive-16by9" data-ride="carousel">
+
+
+
+                                                <ul class="carousel-indicators">
+                                                    @for (var i = 0; i < slideShowImages.Count; i++)
+                                                    {
+                                                        @if (checkdata == 0)
+                                                        {
+                                                            <li data-target="#demoslideshow-@webMedia.MediaId" data-slide-to="@i" class="active"></li>
+                                                            checkdata++;
+                                                        }
+                                                        else
+                                                        {
+                                                            <li data-target="#demoslideshow-@webMedia.MediaId" data-slide-to="@i"></li>
+
+                                                        }
+                                                    }
+                                                </ul>
+                                                <div class="carousel-inner embed-responsive-16by9 vjs-16-9" >
+                                                    @for (var i = 0; i < slideShowImages.Count; i++)
+                                                    {
+                                                        @if (countimages == 0)
+                                                        {
+                                                            <div class="carousel-item active slideshowcarousel">
+                                                                <img src="@slideShowImages[i].MediaURL" class="d-block " style="width:100%; "  alt="...">
+                                                            </div>
+                                                            countimages++;
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="carousel-item slideshowcarousel">
+                                                                <img src="@slideShowImages[i].MediaURL" class="d-block" style="width: 100%; " alt="...">
+                                                            </div>
+
+                                                        }
+                                                    }
+
+                                                </div>
+
+
+
+                                                <a class="carousel-control-prev" href="#demoslideshow-@webMedia.MediaId" data-slide="prev"><span class="carousel-control-prev-icon"></span></a>
+                                                <a class="carousel-control-next" href="#demoslideshow-@webMedia.MediaId" data-slide="next"><span class="carousel-control-next-icon"></span></a>
+
+                                            </div>
+                                        </div>
+                                    }
+                                    else if (webMedia.MediaType == "Video")
+                                    {
+                                        <div class="tab-pane fade show embed-responsive embed-responsive-16by9 @activeClassName " id="pills-@webMedia.MediaType-@tabCounter" role="tabpanel" aria-labelledby="pills-@webMedia.MediaType-tab-@tabCounter">
+                                            <i class="fal fa-play-circle text-white vide-play-in"></i>
+
+                                            <video id='vid-@videoCount' controls class='video-js vjs-16-9 vjs-default-skin embed-responsive-item'>
+                                                <source id="vvid-@videoCount" src="@webMedia.MediaURL">
+                                                <track label="English subtitles" kind="subtitles" srclang="en" src="/static/the-web-is-always-changing.vtt" default="">
+                                            </video>
+                                        </div>
+                                        @*<div class="tab-pane fade show @activeClassName " id="pills-@webMedia.MediaType-@tabCounter" role="tabpanel" aria-labelledby="pills-@webMedia.MediaType-tab-@tabCounter">
+                                                <div id="owl-carousel-video" class="owl-carousel owl-theme owl-center owl-loaded ">
+                                                    <div id='v-@webMedia.MediaId' mediaurl="@webMedia.MediaURL" class="vedslide"></div>
+
+                                                </div>
+                                            </div>*@
+                                        videoCount++;
+                                    }
+                                    tabCounter = tabCounter + 1;
+                                }
+                            }
+                            else
+                            {
+                                <div class="cameralive bg-black tab-pane fade d-flex align-items-center justify-content-center show active" id="pills-camera-no" role="tabpanel" aria-labelledby="pills-camera-tab-no">
+                                    <p class="text-white font-30">
+                                        Our camera is switched off at the moment.
+                                        <br />
+                                        Please come back when there is a service scheduled
+                                    </p>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="cameralive bg-black tab-pane fade d-flex align-items-center justify-content-center show active" id="pills-camera-no" role="tabpanel" aria-labelledby="pills-camera-tab-no">
+                                <p class="text-white font-30">
+                                    Our camera is switched off at the moment.
+                                    <br />
+                                    Please come back when there is a service scheduled
+                                </p>
+                            </div>
+                        }
+                    </div>
+                    <div class="bg-blue pt-3 pb-3">
+                        <ul class="nav nav-tabs weekly font-14 mt-0 p-0 mb-0" id="pills-tab" role="tablist">
+                            @{
+                                int camTabCounter = 0;
+                                tabCounter = 0;
+                                activeClassName = "active";
+                                var countVideos = 0;
+                            }
+                            @if (Model.mediaList != null)
+                            {
+                                @foreach (WebsiteMedia webMedia in Model.mediaList)
+                                {
+                                    if (tabCounter > 0)
+                                    {
+                                        activeClassName = "";
+                                    }
+                                    if (webMedia.MediaType == "AdminCamera" || webMedia.MediaType == "ClientCamera")
+                                    {
+                                        <li class="nav-item">
+                                            <a class="nav-link @activeClassName pt-1 pb-1 pl-sm-3 pr-sm-3 pl-2 pr-2 text-white" onclick="OpenCamera('CameraLiveStream-@camTabCounter')" id="pills-@webMedia.MediaType-tab-@tabCounter" data-toggle="pill" href="#pills-@webMedia.MediaType-@tabCounter" role="tab" aria-controls="pills-@webMedia.MediaType-@tabCounter" aria-selected="true">@webMedia.TabName</a>
+                                        </li>
+                                        camTabCounter++;
+                                    }
+                                    else if (webMedia.MediaType == "Video")
+                                    {
+                                        <li class="nav-item">
+                                            <a class="nav-link @activeClassName pt-1 pb-1 pl-sm-3 pr-sm-3 pl-2 pr-2 text-white" onclick="  OpenVidJs('vid-@countVideos')" id="pills-@webMedia.MediaType-tab-@tabCounter" data-toggle="pill" href="#pills-@webMedia.MediaType-@tabCounter" role="tab" aria-controls="pills-@webMedia.MediaType-@tabCounter" aria-selected="true">@webMedia.TabName</a>
+                                        </li>
+                                        countVideos++;
+                                    }
+                                    else
+                                    {
+
+                                        <li class="nav-item">
+                                            <a class="nav-link @activeClassName pt-1 pb-1 pl-sm-3 pr-sm-3 pl-2 pr-2 text-white" id="pills-@webMedia.MediaType-tab-@tabCounter" data-toggle="pill" href="#pills-@webMedia.MediaType-@tabCounter" role="tab" aria-controls="pills-@webMedia.MediaType-@tabCounter" aria-selected="true">@webMedia.TabName</a>
+                                        </li>
+                                    }
+                                    tabCounter = tabCounter + 1;
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+                @if (Model.notice != null)
+                {
+                    if (Model.notice.ChurchNoticeId != 0)
+                    {
+                        <div class="text-praaa mt-2 mb-2">
+                            <div class="border bg-white rounded-lg  ">
+                                <div class="card-header-custom text-white font-20 text-center w-100 rounded-top   "
+                                     style="background-color: #1f4a79;">
+                                    Notices
+                                </div>
+                                <div class="news-wrap mb-2 p-2">
+
+                                    <div class="font-25 bg-white font-weight-bold ProximaNova">
+                                        @Model.notice.NoticeTitle
+                                    </div>
+                                    <p class="font-16 mb-2">
+                                        @Html.Raw(Model.notice.NoticeName)
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                }
+            </div>
+
+            <div class="MobileContent col-xl-3 col-lg-3 col-md-12 col-sm-12 ">
+                <!-- <div class="row m-0"> -->
+                <div class="col-top-img p-0 ">
+                    <div class="row ">
+                        <div class="col-sm-12">
+                            <div class="float-left">
+                                <img src="@Model.Churches.ImageURl" alt="" class="rounded-lg main-img">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-top-img p-0 font-14 mt-3 ">
+                 <div class="card">
+                     <div class="card-body p-2">
+                         <p class="icon-top-s">
+
+                             <div class="row">
+                                 <div class="col-sm-2">
+                                     <div class="float-left">
+                                         <i class="fas fa-home font-25 "></i>
+
+                                     </div>
+                                 </div>
+                                 <div class="col-sm-9 ml-2 ">
+                                     <div class="float-left text-left maxWidthTitle " style=" text-align:left">
+                                         @Model.Churches.ChurchName, @Model.Churches.Town
+
+                                     </div>
+                                 </div>
+                             </div>
+
+
+
+                         </p>
+                         <p class="icon-top-s">
+
+                             <div class="row">
+                                 <div class="col-sm-2">
+                                     <div class="float-left">
+                                         <i class="fas fa-envelope font-25 "></i>
+
+                                     </div>
+                                 </div>
+                                 <div class="col-sm-9 ml-2 ">
+                                     <div class="float-left text-left maxWidthTitle" style="text-align:left">
+                                         @Model.Churches.EmailAddress
+
+                                     </div>
+                                 </div>
+                             </div>
+
+
+
+                         </p>
+                         <p class="icon-top-s">
+
+                             <div class="row">
+                                 <div class="col-sm-2">
+                                     <div class="float-left">
+                                         <i class="fas fa-globe font-25 "></i>
+
+                                     </div>
+                                 </div>
+                                 <div class="col-sm-9 ml-2  ">
+                                     <div class="float-left text-left wordbreak maxWidthTitle" style=" text-align:left">
+
+                                         @Model.Churches.Website
+
+                                     </div>
+                                 </div>
+                             </div>
+
+
+
+                         </p>
+                     </div>
+                 </div>
+                          
+                         
+                    
+
+
+                </div>
+                <br />
+
+                @if (Model.Churches.ScheduleShowOnWebSite == false)
+                {
+                    <div class=" border border-dark col-sm-12 pr-0 pl-0 rounded-lg">
+                        <div class="card-header-custom text-white font-20 text-center w-100  "
+                             style="background-color: #1f4a79;">
+                            Next Scheduled Event
+                        </div>
+                        <div class="card-body">
+                            <div class=" font-18 text-center">
+                                @if (Model.NextScheduleList != null)
+                                {
+                                    if (Model.NextScheduleList.Count() > 0)
+                                    {
+                                        @foreach (var schedule in Model.NextScheduleList.Take(1))
+                                        {
+                                            @if (schedule.IsRepeated == true && schedule.Record == true)
+                                            {
+                                                <b>
+                                                    @schedule.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span> <i class="fa fa-video-camera text-danger"></i><br />
+                                                </b><br />
+                                            }
+                                            else if (schedule.IsRepeated == true && schedule.Record == false)
+                                            {
+                                                <b>
+                                                    @schedule.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span>
+                                                </b><br />
+                                            }
+                                            else if (schedule.IsRepeated == false && schedule.Record == true)
+                                            {
+                                                <b>
+                                                    @schedule.EventName <i class="fa fa-video-camera text-danger"></i>
+                                                </b><br />
+                                            }
+                                            else
+                                            {
+                                                <b>
+                                                    @schedule.EventName
+                                                </b><br />
+                                            }
+                                            <p>@schedule.EventDay @schedule.EventTime.ToString("h:mm tt")</p>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <br />
+                                        <p>No Events Scheduled</p>
+                                    }
+                                }
+                                else
+                                {
+                                    <br />
+                                    <p>No Events Scheduled</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                <br />
+                <!-- </div> -->
+                <div class="clearfix"></div>
+            </div>
+
+        </div>
+        <div class="row ChurchInfoCard">
+            
+            <div class="col-xl-8 col-lg-9  col-md-12 pl-lg-0 pr-md-3 pr-sm-0 col-sm-12 pr-sm-3">
+                <div class="card m-3">
+                    <div class="card-body">
+                        <table>
+                            <tr class="m-2 pt-2">
+                                <td class="p-2"> <i class="fas fa-home font-25 mr-3"></i></td>
+                                <td class="maxMobileScreenWidth text-left" >@Model.Churches.ChurchName, @Model.Churches.Town</td>
+                            </tr>
+                            <tr  class="m-2 pt-2">
+                                <td class="p-2"> <i class="fas fa-envelope font-25 mr-3"></i></td>
+                                <td class="maxMobileScreenWidth text-left" >  @Model.Churches.EmailAddress</td>
+                            </tr>
+                            <tr  class="m-2 pt-2">
+                                <td class="p-2"><i class="fas fa-globe font-25 mr-3 "></i></td>
+                                <td class="maxMobileScreenWidth text-left">  @Model.Churches.Website</td>
+                            </tr>
+                        </table>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m-0 LaptopScreenSetup pl-xl-0 pl-lg-3 pr-xl-0 pr-lg-3">
+           
+            <div class="col-xl-9 col-lg-9  col-md-12 pl-lg-0 pr-md-3 pr-sm-0 col-sm-12 pr-sm-3">
+                @if (Model.Churches.ScheduleShowOnWebSite == false)
+                {
+                    <div class="heding-week pt-2 pb-2 col-md-4 text-white font-20 text-center rounded-lg"
+                         style="background-color: #1f4a79;">
+                        Weekly Schedule
+                    </div>
+                    <div class="card">
+                        <ul class="nav nav-tabs weekly" role="tablist">
+                            <li class="nav-item" style="width:14.3%;">
+                                <a class="nav-link active" data-toggle="pill" href="#pills-day1-tab" role="tab" aria-controls="pills-home" aria-selected="true">Today</a>
+                            </li>
+                            <li class="nav-item" style="width:14.3%">
+                                <a class="nav-link" data-toggle="pill" href="#pills-day2-tab" role="tab" aria-controls="pills-profile" aria-selected="false">@System.DateTime.Now.AddDays(1).ToString("dddd")</a>
+                            </li>
+                            <li class="nav-item" style="width:14.3%">
+                                <a class="nav-link" id="" data-toggle="pill" href="#pills-day3-tab" role="tab" aria-controls="pills-contact" aria-selected="false">@System.DateTime.Now.AddDays(2).ToString("dddd")</a>
+                            </li>
+                            <li class="nav-item" style="width:14.3%">
+                                <a class="nav-link" id="" data-toggle="pill" href="#pills-day4-tab" role="tab" aria-controls="pills-contact" aria-selected="false">@System.DateTime.Now.AddDays(3).ToString("dddd")</a>
+                            </li>
+                            <li class="nav-item" style="width:14.3%">
+                                <a class="nav-link" id="" data-toggle="pill" href="#pills-day5-tab" role="tab" aria-controls="pills-contact" aria-selected="false">@System.DateTime.Now.AddDays(4).ToString("dddd")</a>
+                            </li>
+                            <li class="nav-item" style="width:14.3%">
+                                <a class="nav-link" id="" data-toggle="pill" href="#pills-day6-tab" role="tab" aria-controls="pills-contact" aria-selected="false">@System.DateTime.Now.AddDays(5).ToString("dddd")</a>
+                            </li>
+                            <li class="nav-item" style="width:14.2%">
+                                <a class="nav-link" id="" data-toggle="pill" href="#pills-day7-tab" role="tab" aria-controls="pills-contact" aria-selected="false">@System.DateTime.Now.AddDays(6).ToString("dddd")</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-day1-tab" aria-labelledby="pills-day1-tab">
+                                <div class="table-now">
+                                    <table class="table table-striped table-responsive-md table-borderless">
+                                        <tbody>
+                                            @if (Model.ScheduleListDay0 != null)
+                                            {
+                                                @if (Model.ScheduleListDay0.Count() > 0)
+                                                {
+                                                    @foreach (var itm in Model.ScheduleListDay0)
+                                                    {
+                                                        <tr>
+                                                            <td scope="row" class="font-weight-normal text-purple">
+                                                                @if (itm.IsRepeated == true && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span> <br />
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == true && itm.Record == false)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span>
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == false && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                            </td>
+                                                            <td scope="row" class="text-purple font-weight-normal">@itm.EventTime.ToString("h:mm tt")</td>
+                                                            @if (itm.Record == true)
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box text-purple lg-icon"></i>
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box-off lg-icon"></i>
+
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td scope="row" class="font-weight-normal text-purple">
+                                                            There is currently nothing scheduled for today.
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td scope="row" class="font-weight-normal text-purple">
+                                                        There is currently nothing scheduled for today.
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="pills-day2-tab" aria-labelledby="pills-day2-tab">
+                                <div class="table-now">
+                                    <table class="table table-striped table-responsive-md table-borderless">
+                                        <tbody>
+                                            @if (Model.ScheduleListDay1 != null)
+                                            {
+                                                @if (Model.ScheduleListDay1.Count() > 0)
+                                                {
+                                                    @foreach (var itm in Model.ScheduleListDay1)
+                                                    {
+                                                        <tr>
+                                                            <td scope="row" class="font-weight-normal text-purple">
+                                                                @if (itm.IsRepeated == true && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span> <br />
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == true && itm.Record == false)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span>
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == false && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                            </td>
+                                                            <td scope="row" class="text-purple font-weight-normal">@itm.EventTime.ToString("h:mm tt")</td>
+                                                            @if (itm.Record == true)
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box text-purple lg-icon"></i>
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box-off lg-icon"></i>
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td scope="row" class="font-weight-normal text-purple">
+                                                            There is currently nothing scheduled for this day.
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td scope="row" class="font-weight-normal text-purple">
+                                                        There is currently nothing scheduled for this day.
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="pills-day3-tab" role="tabpanel" aria-labelledby="pills-day3-tab">
+                                <div class="table-now">
+                                    <table class="table table-striped table-responsive-md table-borderless">
+                                        <tbody>
+                                            @if (Model.ScheduleListDay2 != null)
+                                            {
+                                                @if (Model.ScheduleListDay2.Count() > 0)
+                                                {
+                                                    @foreach (var itm in Model.ScheduleListDay2)
+                                                    {
+                                                        <tr>
+                                                            <td scope="row" class="font-weight-normal text-purple">
+                                                                @if (itm.IsRepeated == true && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span> <br />
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == true && itm.Record == false)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span>
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == false && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                            </td>
+                                                            <td scope="row" class="text-purple font-weight-normal">@itm.EventTime.ToString("h:mm tt")</td>
+                                                            @if (itm.Record == true)
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box text-purple lg-icon"></i>
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box-off lg-icon"></i>
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td scope="row" class="font-weight-normal text-purple">
+                                                            There is currently nothing scheduled for this day.
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td scope="row" class="font-weight-normal text-purple">
+                                                        There is currently nothing scheduled for this day.
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="pills-day4-tab" role="tabpanel" aria-labelledby="pills-day4-tab">
+                                <div class="table-now">
+                                    <table class="table table-striped table-responsive-md table-borderless">
+                                        <tbody>
+                                            @if (Model.ScheduleListDay3 != null)
+                                            {
+                                                @if (Model.ScheduleListDay3.Count() > 0)
+                                                {
+                                                    @foreach (var itm in Model.ScheduleListDay3)
+                                                    {
+                                                        <tr>
+                                                            <td scope="row" class="font-weight-normal text-purple">
+                                                                @if (itm.IsRepeated == true && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span> <br />
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == true && itm.Record == false)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span>
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == false && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                            </td>
+                                                            <td scope="row" class="text-purple font-weight-normal">@itm.EventTime.ToString("h:mm tt")</td>
+                                                            @if (itm.Record == true)
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box text-purple lg-icon"></i>
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box-off lg-icon"></i>
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td scope="row" class="font-weight-normal text-purple">
+                                                            There is currently nothing scheduled for this day.
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td scope="row" class="font-weight-normal text-purple">
+                                                        There is currently nothing scheduled for this day.
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="pills-day5-tab" role="tabpanel" aria-labelledby="pills-day5-tab">
+                                <div class="table-now">
+                                    <table class="table table-striped table-responsive-md table-borderless">
+                                        <tbody>
+                                            @if (Model.ScheduleListDay4 != null)
+                                            {
+                                                @if (Model.ScheduleListDay4.Count() > 0)
+                                                {
+                                                    @foreach (var itm in Model.ScheduleListDay4)
+                                                    {
+                                                        <tr>
+                                                            <td scope="row" class="font-weight-normal text-purple">
+                                                                @if (itm.IsRepeated == true && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span> <br />
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == true && itm.Record == false)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span>
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == false && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                            </td>
+                                                            <td scope="row" class="text-purple font-weight-normal">@itm.EventTime.ToString("h:mm tt")</td>
+                                                            @if (itm.Record == true)
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box text-purple lg-icon"></i>
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box-off lg-icon"></i>
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td scope="row" class="font-weight-normal text-purple">
+                                                            There is currently nothing scheduled for this day.
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td scope="row" class="font-weight-normal text-purple">
+                                                        There is currently nothing scheduled for this day.
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="pills-day6-tab" role="tabpanel" aria-labelledby="pills-day6-tab">
+                                <div class="table-now">
+                                    <table class="table table-striped table-responsive-md table-borderless">
+                                        <tbody>
+                                            @if (Model.ScheduleListDay5 != null)
+                                            {
+                                                @if (Model.ScheduleListDay5.Count() > 0)
+                                                {
+                                                    @foreach (var itm in Model.ScheduleListDay5)
+                                                    {
+                                                        <tr>
+                                                            <td scope="row" class="font-weight-normal text-purple">
+                                                                @if (itm.IsRepeated == true && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span> <br />
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == true && itm.Record == false)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span>
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == false && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                            </td>
+                                                            <td scope="row" class="text-purple font-weight-normal">@itm.EventTime.ToString("h:mm tt")</td>
+                                                            @if (itm.Record == true)
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box text-purple lg-icon"></i>
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box-off lg-icon"></i>
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td scope="row" class="font-weight-normal text-purple">
+                                                            There is currently nothing scheduled for this day.
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td scope="row" class="font-weight-normal text-purple">
+                                                        There is currently nothing scheduled for this day.
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="pills-day7-tab" role="tabpanel" aria-labelledby="pills-day7-tab">
+                                <div class="table-now">
+                                    <table class="table table-striped table-responsive-md table-borderless">
+                                        <tbody>
+                                            @if (Model.ScheduleListDay6 != null)
+                                            {
+                                                @if (Model.ScheduleListDay6.Count() > 0)
+                                                {
+                                                    @foreach (var itm in Model.ScheduleListDay6)
+                                                    {
+                                                        <tr>
+                                                            <td scope="row" class="font-weight-normal text-purple">
+                                                                @if (itm.IsRepeated == true && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span> <br />
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == true && itm.Record == false)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName <span class="text-pink">(</span>Weekly<span class="text-pink">)</span>
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else if (itm.IsRepeated == false && itm.Record == true)
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <b>
+                                                                        @itm.EventName
+                                                                    </b>
+                                                                    <br />
+
+                                                                }
+                                                            </td>
+                                                            <td scope="row" class="text-purple font-weight-normal">@itm.EventTime.ToString("h:mm tt")</td>
+                                                            @if (itm.Record == true)
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box text-purple lg-icon"></i>
+                                                                </td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="font-weight-normal font-weight-bold">
+                                                                    <i class="mdi mdi-camcorder-box-off lg-icon"></i>
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td scope="row" class="font-weight-normal text-purple">
+                                                            There is currently nothing scheduled for this day.
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td scope="row" class="font-weight-normal text-purple">
+                                                        There is currently nothing scheduled for this day.
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.Announcement != null)
+                {
+                    if (Model.Announcement.ChurchAnnouncementId != 0)
+                    {
+                        <div class="text-praaa mt-2 mb-2">
+                            <div class="border bg-white rounded-lg  " style="position: sticky; top:1px;">
+                                <div class="card-header-custom text-white font-20 text-center w-100 rounded-top   "
+                                     style="background-color: #1f4a79;">
+                                    Announcements
+                                </div>
+                                <div class="news-wrap mb-2 p-2">
+
+                                    <div class="font-25  bg-white font-weight-bold ProximaNova">
+                                        @Model.Announcement.AnnouncementTitle
+                                    </div>
+                                    <p class="font-16 mb-2">
+                                        @Html.Raw(Model.Announcement.AnnouncementText)
+                                    </p>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    }
+                }
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 ">
+                @if (Model.newsletter != null)
+                {
+                    @if (Model.newsletter.ChurchNewsLetterId != 0)
+                    {
+
+                        <div class="border bg-white rounded-lg  ">
+                            <div class="card-header-custom text-white font-20 text-center w-100 rounded-top   "
+                                 style="background-color: #1f4a79;">
+                                NEWSLETTER
+                            </div>
+                            <div class="news-wrap mb-3 p-4">
+
+                                <h4 class="news-heading font-16 font-weight-bold">@Model.newsletter.NewsLetterTitle</h4>
+                                <p class="font-weight-light mb-2 font-12">
+                                    <a href="@Model.newsletter.NewsLetterUrl" target="_blank">Click Here</a>
+                                </p>
+                                <p class="font-14 mb-0 "></p>
+                                <p class="font-14 mb-0 ">@Model.newsletter.CreatedAt.ToString("dd MMM yyyy")</p>
+                            </div>
+                        </div>
+                    }
+                }
+                @if (Model.churchDonation != null)
+                {
+                    @if (Model.churchDonation.ShowOnWebsite)
+                    {
+                        <div class="col-sm-12  news pr-0 pl-0 mt-2">
+                            <div class="form-group row news">
+                                <div class="col-sm-12">
+                                    <div class="max-width-100 max-height-100 ">
+                                        <img src="@Model.churchDonation.ImageUrl" class="max-height-100 w-100  rounded-top" style="border-top-left-radius:30px;border-top-right-radius:30px; " alt="Alternate Text" />
+                                        <a href="@Model.churchDonation.WebSiteUrl" target="_blank" class="btn btn-info rounded-bottom w-100" style="border-bottom-left-radius:30px;border-bottom-right-radius:30px; ">Donate Now</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="col-1 d-xl-block d-none"></div>
+        </div>
+        <!-- recording start -->
+        @if (Model.Churches.RecordingShowOnWebSite == false)
+        {
+            <div class="bg-blue">
+
+                <div class="row m-0 LaptopScreenSetup   pl-xl-0 pl-lg-3  pr-xl-0 pr-lg-3">
+                   
+                    <div class="col-12">
+                        <div class="float-left">
+                            <div class="text-white font-30 text-center pt-4  avantgardece">
+                                Recordings of past events at @Model.Churches.ChurchName, @Model.Churches.Town
+                            </div>
+                            <div class="text-white font-14  pt-2 pb-4 avantgardece">
+
+                                If the event you are looking for is not listed below then it was NOT RECORDED and NO PLAYBACK is available.<br>
+                                All recording queries and requests should be directed to the Parish.
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row m-0 LaptopScreenSetup pl-xl-0 pl-lg-5 pr-xl-0 pr-lg-5">
+               
+                <div class="col-xl-12">
+                    <div class="row ">
+                        <div class="col-12 pt-4 pb-1 pr-4">
+                            <div class="row ">
+                                @*<div class="col-12">
+                                        <button id="btnRecordingSearch" type="button" class="btn btn-pink text-white float-right font-14 " data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Search Recording</button>
+                                        <div class="collapse bg-white  news row m-0 mt-2 w-100" id="collapseExample">
+                                        </div>
+                                    </div>*@
+
+                                <div class="col-12">
+                                    <div class="card card-body border bg-white  rounded-lg row m-0">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="row">
+                                                    <div class="news-wrap col-lg-4 col-md-6 col-sm-12 mt-1">
+                                                        <label> Event Name</label>
+                                                        <input type="text" class="form-control" id="TxtSearchEventName" />
+                                                    </div>
+                                                    <div class="news-wrap col-lg-3 col-md-6 col-sm-12  ">
+                                                        <label>  Search By Date From</label>
+                                                        <div id="datepicker-popup2" class="input-group date datepicker">
+                                                            <input type="text" id="TxtSearchFromDate" name="fromDate" class="form-control" placeholder="From Date" />
+                                                            <span class="input-group-addon input-group-append border-left">
+                                                                <span class="ti-calendar input-group-text"></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="news-wrap col-lg-3 col-md-6 col-sm-12  ">
+                                                        <label>To Date</label>
+                                                        <div id="datepicker-popup3" class="input-group date datepicker">
+                                                            <input type="text" id="TxtSearchToDate" name="ToDate" class="form-control" placeholder="To Date" />
+                                                            <span class="input-group-addon input-group-append border-left">
+                                                                <span class="ti-calendar input-group-text"></span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="news-wrap col-lg-2 col-md-6 col-sm-12  center">
+                                                        <label></label>
+                                                        <button id="btnSearchRecording" class="btn btn-info bg-blue float-center form-control mt-2">Search</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class=" col-12">
+                            <div class=" font-32  pb-4 bg-white text-pink">
+                            </div>
+                            <div class="border bg-white pb-4 rounded-lg pt-4 row m-0 RecList">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              
+            </div>
+        }
+        <!-- recording END -->
+    </div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="~/theme/vendors/owl-carousel-2/owl.carousel.min.js"></script>
+
+<script src="~/theme/js/owl-carousel.js"></script>
+<script src="~/js/jwplayer.js"></script>
+<script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
+<script type="text/javascript">
+
+    var timeOutFunction = setTimeout(LoadRecordingList, 2000);
+  
+    function OpenCamera(camId) {
+
+        //$('#LiveStreamSrc').attr("src", '' + liveUrl + '');
+        var player = videojs(camId);
+        player.autoplay(false);
+    }
+
+    function OpenVidJs(VidId) {
+
+        //$('#LiveStreamSrc').attr("src", '' + liveUrl + '');
+        var player = videojs(VidId);
+        player.autoplay(false);
+    }
+    function OpenPictures() {
+        var cameras = document.getElementById("CamerasContainer");
+        var images = document.getElementById("carouselExampleCaptions");
+        var vedios = document.getElementById("VediosContainer");
+
+        //if (x.style.display === "none") {
+        cameras.style.display = "none";
+        vedios.style.display = "none";
+        // } else {
+        images.style.display = "block";
+        // }
+    }
+
+    function onDownloadClickWebsite(url) {
+
+
+        $.ajax({
+            type: "POST",
+            url: "/Recording/onDownloadClick/",
+            //data: camObj,
+
+            data: { url: url },
+
+            //   contentType: "application/json;charset=UTF-8",
+            //  dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    $(window).scrollTop(0);
+
+                    $('#DownloadRecordingSuccessMessage').removeAttr('hidden');
+                    $('#DownloadRecordingSuccessMessage').html('Kindly check your download folder file downloading is in progress');
+                    $('#DownloadRecordingSuccessMessage').fadeIn();
+                    $('#DownloadRecordingSuccessMessage').fadeTo(5000, 500).slideUp(500, function () {
+                        $("#DownloadRecordingSuccessMessage").slideUp(500);
+                    });
+                    $('#DownloadRecordingSuccessMessage').attr('hidden');
+
+
+                }
+                else {
+                    $(window).scrollTop(0);
+                    $('#DownloadRecordingErrorMessage').removeAttr('hidden');
+                    $('#DownloadRecordingErrorMessage').html(response.text);
+                    $('#DownloadRecordingErrorMessage').fadeIn();
+                    $('#DownloadRecordingErrorMessage').fadeTo(5000, 500).slideUp(500, function () {
+                        $("#DownloadRecordingErrorMessage").slideUp(500);
+                    });
+                    $('#DownloadRecordingErrorMessage').attr('hidden');
+
+
+                }
+
+            },
+            error: function (errormessage) {
+                //alert(errormessage.responseText);
+            }
+
+        });
+
+    }
+
+
+    $(document).ready(function () {
+
+        LoadRecordingList();
+
+        OpenCamera('CameraLiveStream-0');
+        
+        OpenVidJs('vid-0');
+
+    });
+
+  
+    function currentTime() {
+        var systemdate = new Date(); /* creating object of Date class */
+        var ukTime = systemdate.toLocaleString("en-US", { timeZone: 'Europe/London' })
+        var date = new Date(ukTime);
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        var sec = date.getSeconds();
+        var midday = "AM";
+        midday = (hour >= 12) ? "PM" : "AM"; /* assigning AM/PM */
+        hour = (hour == 0) ? 12 : ((hour > 12) ? (hour - 12) : hour); /* assigning hour in 12-hour format */
+        hour = updateTime(hour);
+        min = updateTime(min);
+        sec = updateTime(sec);
+        var time = document.getElementById("clock").innerText = hour + " : " + min + " : " + sec + " " + midday; /* adding time to the div */
+        var eventtime = document.getElementById("eventtime");
+
+        var t = setTimeout(currentTime, 1000); /* setting timer */
+        nextEvent();
+    }
+
+    function nextEvent() {
+        var eventtime = document.getElementById("eventtime");
+        var currenttime = document.getElementById("clock");
+        if (eventtime > currenttime) {
+
+            return true;
+
+        }
+        else {
+
+            return false;
+        }
+    }
+    $("#btnRecordingSearch").click(
+        function () {
+            if ($("#collapseExample").is(":visible")) {
+                $("#collapseExample").hide();
+            }
+            else {
+                $("#collapseExample").show();
+            }
+        });
+    $("#btnSearchRecording").click(
+        function () {
+            LoadRecordingList();
+        });
+
+
+
+
+    function LoadRecordingList() {
+
+        var EventName = document.getElementById('TxtSearchEventName').value;
+        var FromDate = document.getElementById('TxtSearchFromDate').value;
+        var ToDate = document.getElementById('TxtSearchToDate').value;
+        var Slug = document.getElementById('hfslug').value;
+
+        $.ajax({
+
+            url: "/Website/SearchRecording",
+            type: "GET",
+            contentType: "application/json;charset=utf-8",
+            data: { EventName: EventName, FromDate: FromDate, ToDate: ToDate, Slug: Slug },
+            dataType: "json",
+            success: function (result) {
+
+                var html = '';
+
+                $.each(result, function (key, item) {
+
+                    html += '<div class="news-wrap col-xl-3 col-lg-4 col-md-6 col-sm-12 pb-3 pt-3 ">';
+                    // html += '<div class="  text-white font-16 font-weight-bolder w-100 mb-0" id="context-menu-hover-autohideRecording"  recordingId="' + item.recordingId + '">' + item.recordingTitle + '</div>';
+                    html += '<h4 class="news-heading font-16 font-weight-normal">' + item.recordingTitle + '</h4>';
+                    var now = new Date(item.date);
+                    var Datestring = moment(now).format('DD MMM YYYY');
+
+
+
+                    html += '<div class="row"><div class="col-xl-6 col-lg-8 col-md-8 col-sm-6 pb-2"><div class="font-weight-light in-icon-arrow d-inline-block font-10"><p class="mb-0">' + Datestring + '</p></div></div>';
+                    var srcUrl = "'" + item.src + "'";
+                    if (item.allowDownload) {
+                        html += '<div class="col-xl-6 col-lg-4 col-md-4 col-sm-6 pb-3"><a href="' + item.src+'" download="recordingVideos.mp4" class="text-warning "   title="Download"><i class="fal fa-arrow-circle-down font-36"></i></a>&nbsp;&nbsp;<a href="../Website/Player/' + item.recordingId + '"  class="ply-vid"><i class="fal fa-play-circle font-36"></i></a></div></div>';
+
+                    }
+                    else {
+                        html += '<div class="col-lg-4 col-md-4 col-sm-4 pb-3"><a href="../Website/Player/' + item.recordingId + '"  class="ply-vid"><i class="fal fa-play-circle font-36"></i></a></div></div>';
+
+                    }
+                    // html += '<button onclick="onDownloadClick(' + item.src + ')" ><i class="fal fa-play-circle font-36"></i></a>';
+                    html += ' </div>';
+
+                });
+               
+                $('.RecList').html(html);
+
+
+            },
+            error: function (errormessage) {
+                //   alert(errormessage);
+            }
+        });
+    }
+    function updateTime(k) { /* appending 0 before time elements if less than 10 */
+        if (k < 10) {
+            return "0" + k;
+        }
+        else {
+            return k;
+        }
+    }
+    window.onload = function () {
+        var DateSet = new Date();
+        var FromDateSet = new Date();
+        //FromDateSet.setDate(FromDateSet.getDate() - 7);
+        FromDateSet.setFullYear(2016, 9, 1);
+        var FromDatestring = moment(FromDateSet).format('YYYY-MMM-DD');
+        var ToDatestring = moment(DateSet).format('YYYY-MMM-DD');
+        document.getElementById("TxtSearchFromDate").value = FromDatestring;
+
+        $("#TxtSearchToDate").val(ToDatestring);
+        OpenCamera('CameraLiveStream-0');
+      
+       
+       
+
+    }
+    currentTime();
+
+</script>
+
+
+

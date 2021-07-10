@@ -1,0 +1,28 @@
+https://www.shellhacks.com/aws-cli-install-aws-cli-ubuntu-linux/#:~:text=The%20easiest%20way%20to%20install%20the%20AWC%20CLI,the%20latest%20version%20of%20the%20AWS%20CLI%20v2%3A
+
+Installation Commands
+----------------------------
+sudo apt update
+sudo apt install awscli
+
+OR
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+----------------------------
+
+Uploading/Downloading files from S3
+-------------------------------------------
+https://www.youtube.com/watch?v=ccYmZd75jLA
+
+1) First create an IAM-Role with S3 access
+2) Attach the created role with EC2
+3) Use following command for file upload/download
+
+aws s3 cp file.txt s3://<bucket_name>
+e.g
+aws s3 cp mycustomers s3://mongo1dbbackup1
+aws s3 cp s3://sandboxing-bucket /var/www --recursive
+-------------------------------------------
+
