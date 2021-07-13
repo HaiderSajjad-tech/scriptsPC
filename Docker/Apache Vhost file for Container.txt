@@ -1,0 +1,13 @@
+<VirtualHost *:80>
+
+ServerAdmin haider.sajjad1888@gmail.com
+#DocumentRoot /var/www/haidersaji.tk/
+ServerName www.haidersaji.tk
+
+ProxyPreserveHost On
+ProxyRequests Off
+
+ProxyPass / http://localhost:49154/
+ProxyPassReverse / http://localhost:49154/
+
+</VirtualHost>
