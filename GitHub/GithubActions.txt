@@ -1,0 +1,122 @@
+Simple GithubAction CI/CD Pipeline
+https://www.youtube.com/watch?v=mFFXuXjVgkU
+
+https://www.youtube.com/watch?v=FYIRvqdP3pQ
+
+Sample Pipeline
+------------------------
+name: testcicd
+
+on: 
+  push:
+    branches:    
+      - main
+      
+jobs:
+  build:
+    name: testing the sample workflow cicd
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: printing some message as indication of success
+        run: |
+          echo "HELLO"
+          echo "WORLD"
+------------------------
+
+GitHub Actions
+------------------
+
+Introduced back in 2019, with GitHub Actions we can use GitHub runners to create Pipelines.
+
+* How does "GitHub Actions" overlap with our requirement ?
+
+Previously on GitLab, we had pipelines for services repos such as CAMS, CATS, ABS etc. Whenever there was a merge or push to the main/master branch, 
+the Pipeline was triggered. Its main function was to create the new Docker image of that particular service and then push the image to the GitLab 
+container registry. 
+
+Now that we are shifting from GitLab to GitHub, we need a similar functionality as discussed above. GitHub Actions just have the capacity to do that for us.
+
+* Practical Demonstration
+
+In the following steps, I will explain the step by step process of how we can create a similar pipeline like the ones we had on GitLab. For the demonstration purpose,
+I have created a simple NodeJs application which we will use throughout the practical hands-on.
+
+1) Login to your GitHub account
+2) Create a new repository and call it nodeappdocker (could be any name as per required)
+3) Initialize the repository with a simple README.md file, and clone the repository on your system.
+4) Navigate to the repository folder on your system and create following files:
+
+4.a) node-js-example.js
+Paste following code inside:
+***************************
+var http = require('http');
+ 
+// create a server listening on 8087
+http.createServer(function (req, res) {
+    // write the response and send it to the client
+    res.writeHead(200, {'Content-Type': 'text/html'}); 
+    res.write('Node.js says hello!');
+    res.end();
+}).listen(9051);
+***************************
+
+4.b) Dockerfile
+Paste following code inside
+***************************
+FROM node:14
+
+WORKDIR /usr/src/app
+
+COPY node-js-example.js /usr/src/app
+
+RUN apt-get update && apt-get install -y nodejs
+
+EXPOSE 9051
+CMD ["node","node-js-example.js"]
+***************************
+
+5) Git Add the edited files, commit and push to the repository
+6) Create the following from the GitHub UI in the repository following the exact same director structure as shown:
+
+6.a) nodeappdocker/.github/workflows/dockerbuildpipeline.yml
+Paste the following code inside:
+***************************
+name: docker-build-and-push-to-container-registry
+
+on: 
+  push:
+    branches:    
+      - main
+      
+jobs:
+  build-and-push-to-ghcr:
+    name: testing the sample workflow cicd
+    runs-on: ubuntu-latest
+  
+    steps:
+      - uses: actions/checkout@v2
+      - name: login to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+          echo "GHCR login success"
+          
+      - name: build and push docker image to GHCR
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/nodeappdocker/nodeapp:tag .
+          IMAGE_ID=ghcr.io/nodeapp:xyzabcoooo
+          docker push ghcr.io/${{ github.repository_owner }}/nodeappdocker/nodeapp:tag
+          echo "Docker Image build success"
+***************************
+
+6.b) The above pipeline performs following main tasks:
+	* the "on" section specifies the pipeline trigger condition which in our case any push or merge in main branch
+	* the "jobs" section specifies all the steps and operating system to work on 
+	* Step "name: login to GHCR" logs into GitHub container registry
+	* Step "name: build and push docker image to GHCR" builds the rquired image and pushes to GitHub container registry of that repository
+	* We can pull the above pushed image from GHCR by using command "docker pull ghcr.io/<repo-owner-or-organization-name>/nodeappdocker/nodeapp:tag"
+
+7) After committing the above file, you should be able to see your first workflow run in the "Actions" tab.
+8) The logs of workflow can be checked by clicking on the subject workflow
+9) For testing, make some changes main repository files, and create a new branch, and then merge in the main branch, a subsequent workflow will be triggered 
+similar to the prvious pipelines in GitLab
