@@ -1,0 +1,23 @@
+services:
+  - docker:dind
+
+image: docker:latest
+
+stages:
+  - build
+
+variables:
+  AMD64_IMAGE: $CI_REGISTRY_IMAGE/amd64
+  PROD_TAG: prod
+  DEV_TAG: dev
+
+docker-build-amd64-prod:
+  stage: build
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - echo "Building Docker AMD_64 IMAGE"
+    - docker build -t $AMD64_IMAGE:$PROD_TAG .
+    - docker push $AMD64_IMAGE:$PROD_TAG
+  only:
+    - main
