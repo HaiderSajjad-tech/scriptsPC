@@ -1,0 +1,57 @@
+-------------------------------------------
+Lambda Example with API Gateway
+-------------------------------------------
+https://www.youtube.com/watch?v=uFsaiEhr1zs
+-------------------------------------------
+
+
+---------------------------------------------------------
+Sample Lambda Python Function
+---------------------------------------------------------
+import json
+
+def lambda_handler(event, context):
+    
+ # 1. Parse query string parameters
+ 
+    param = event['queryStringParameters']['param']
+    
+    print("PARAMETERS RECIEVED " + param)
+   
+    # 2. Return the response object
+    return {
+        "statusCode": 200,
+        "body": json.dumps({
+            "message": param,
+            # "location": ip.text.replace("\n", "")
+        }),
+    }
+---------------------------------------------------------
+
+---------------------------------------------------------
+Lambda Python Function for viewing running EC2s
+---------------------------------------------------------
+import json
+import boto3
+
+def get_running_instances():
+    ec2_client = boto3.client("ec2", region_name="us-east-1")
+    reservations = ec2_client.describe_instances(Filters=[
+        {
+            "Name": "instance-state-name",
+            "Values": ["running"],
+        }
+    ]).get("Reservations")
+    
+    for reservation in reservations:
+        for instance in reservation["Instances"]:
+            instance_id = instance["InstanceId"]
+            instance_type = instance["InstanceType"]
+            public_ip = instance["PublicIpAddress"]
+            private_ip = instance["PrivateIpAddress"]
+            print(f"{instance_id}, {instance_type}, {public_ip}, {private_ip}")
+            
+
+def lambda_handler(event, context):    
+    get_running_instances()
+---------------------------------------------------------
