@@ -1,0 +1,204 @@
+name: ci
+
+on:
+  push:
+    branches: 
+      - master
+  workflow_dispatch:
+  
+env:
+  ARMv8_IMAGE_TAG: "us-central1-docker.pkg.dev/veeve-dev/veeveio/cart-device-controller/arm64"
+  
+jobs:
+
+  docker-build-push-gcr-arm64:
+    runs-on: ubuntu-latest
+    
+    steps:
+    
+    
+    - uses: actions/checkout@v2
+    - name: Docker Login to GCP
+      run: echo $GOOGLE_CREDENTIALS | docker login -u "_json_key" --password-stdin https://us-central1-docker.pkg.dev
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_ARTIFACT_WRITER }}
+        REGION: us-central1
+        
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v3
+      with:
+        images: ${{ env.REGION }}-docker.pkg.dev/veeve-dev/veeveio/cart-device-controller
+        tags: |
+          type=sha
+          type=ref,event=tag
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_ARTIFACT_WRITER }}
+        REGION: us-central1
+          
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+        
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+      
+    - name: Build the Docker image (arm64)
+      uses: docker/build-push-action@v2
+      with:
+        file: Dockerfile
+        platforms: linux/arm64
+        build-args: TOKEN = $TOKEN
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}      
+      env:
+        TOKEN: ${{ secrets.HAIDER_TOKEN }}
+
+------------------------------------------------------------------------------------
+
+
+FROM debian:10 as build
+ARG TOKEN
+
+RUN apt-get update && apt-get install -y make gcc g++ git cmake tree gdb curl
+RUN apt-get install -y pkg-config libcpprest-dev libboost-all-dev libevdev-dev libudev-dev libusb-1.0-0-dev libcurl4-gnutls-dev libyaml-cpp-dev libhidapi-dev libspdlog-dev
+
+WORKDIR /env/app
+
+
+RUN mkdir -p src && \
+  cd src && \
+  git clone https://github.com/jupp0r/prometheus-cpp.git && \
+  cd prometheus-cpp && \
+  git checkout v0.12.2 && \
+  git submodule init && \
+  git submodule update && \
+  mkdir -p build && \
+  cd build && \
+  cmake -DBUILD_SHARED_LIBS=ON .. && \
+  make && \
+  make install
+
+RUN mkdir -p src && \
+  cd src && \
+  git clone https://github.com/eclipse/paho.mqtt.c.git && \
+  mkdir -p paho.mqtt.c/build && \
+  cd paho.mqtt.c/build && \
+  cmake -DPAHO_BUILD_STATIC=TRUE -DPAHO_WITH_SSL=FALSE -DPAHO_BUILD_DOCUMENTATION=FALSE .. && \
+  make && \
+  make install
+
+RUN mkdir -p src && \
+  cd src && \
+  git clone https://github.com/eclipse/paho.mqtt.cpp.git && \
+  mkdir -p paho.mqtt.cpp/build && \
+  cd paho.mqtt.cpp/build && \
+  cmake -DPAHO_WITH_SSL=FALSE -DPAHO_BUILD_DOCUMENTATION=FALSE .. && \
+  make && \
+  make install
+
+RUN mkdir -p src && \
+  cd src && \
+  git clone https://github.com/crayzeewulf/libserial.git && \
+  mkdir -p libserial/build && \
+  cd libserial/build && \
+  cmake .. -DLIBSERIAL_ENABLE_TESTING=OFF -DLIBSERIAL_BUILD_EXAMPLES=OFF \
+  -DLIBSERIAL_PYTHON_ENABLE=OFF -DLIBSERIAL_BUILD_DOCS=OFF && \
+  make && \
+  make install
+ 
+RUN mkdir -p src && \
+  cd src && \ 
+  curl -H "Authorization: token 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" -L https://api.github.com/repos/veeveio/weight-based-gesture-classification/tarball > gesture-classification.tar.gz && \
+  tar -xf gesture-classification.tar.gz && \
+  cd veeveio-weight-based-gesture-classification-* && \
+  mkdir -p build && cd build && \
+  cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SAMPLES=FALSE -DBUILD_TESTS=FALSE .. && \
+  make && make install
+  
+RUN mkdir -p src && \
+  cd src && \ 
+  curl -H "Authorization: token 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" -L https://api.github.com/repos/veeveio/cpp-shared/tarball > cpp-shared.tar.gz && \
+  tar -xf cpp-shared.tar.gz && \
+  mv veeveio-cpp-shared-* cpp-shared
+
+COPY ./ src/cdc/
+
+RUN cd src/cdc && \
+  ln -sf ../../../../cpp-shared/src/main/public/veeve src/main/headers/veeve  
+
+RUN mkdir -p src/cdc/build && \
+  cd src/cdc/build && \
+  cmake .. && \
+  make && \
+  cd /env/app && \
+  mkdir -p ../config && \
+  cp src/cdc/config/config.yaml ../config && \
+  cp src/cdc/build/main cdc
+
+FROM debian:10-slim
+RUN apt-get update && apt-get install -y udev 
+WORKDIR /env/app
+COPY --from=build \
+  /usr/lib/aarch64-linux-gnu/libhidapi-libusb.so.0 \
+  /usr/lib/aarch64-linux-gnu/libcpprest.so.2.10 \
+  /usr/lib/aarch64-linux-gnu/libssl.so.1.1 \
+  /usr/lib/aarch64-linux-gnu/libcrypto.so.1.1 \
+  /usr/lib/aarch64-linux-gnu/libboost_system.so.1.67.0 \
+  /usr/lib/aarch64-linux-gnu/libboost_thread.so.1.67.0 \
+  /usr/lib/aarch64-linux-gnu/libboost_log.so.1.67.0 \
+  /usr/lib/aarch64-linux-gnu/libboost_program_options.so.1.67.0 \
+  /usr/lib/aarch64-linux-gnu/libboost_chrono.so.1.67.0 \
+  /usr/lib/aarch64-linux-gnu/libboost_date_time.so.1.67.0 \
+  /usr/lib/aarch64-linux-gnu/libboost_atomic.so.1.67.0 \
+  /usr/lib/aarch64-linux-gnu/libboost_log_setup.so.1.67.0 \
+  /usr/lib/aarch64-linux-gnu/libboost_filesystem.so.1.67.0 \
+  /usr/lib/aarch64-linux-gnu/libboost_regex.so.1.67.0 \
+  /usr/lib/aarch64-linux-gnu/libyaml-cpp.so.0.6 \
+  /lib/aarch64-linux-gnu/libusb-1.0.so.0 \
+  /usr/lib/aarch64-linux-gnu/libevdev.so.2 \
+  /usr/local/lib/libpaho-mqtt3a.so.1 \
+  /usr/local/lib/libpaho-mqttpp3.so.1 \
+  /usr/local/lib/libprometheus-cpp-core.so.0.12 \
+  /usr/local/lib/libprometheus-cpp-pull.so.0.12 \
+  /usr/local/lib/libprometheus-cpp-push.so.0.12 \
+  /usr/local/lib/libGestureClassifcation.so \
+  /usr/lib/aarch64-linux-gnu/libbrotlidec.so.1 \
+  /usr/lib/aarch64-linux-gnu/libbrotlienc.so.1 \
+  /usr/lib/aarch64-linux-gnu/libboost_random.so.1.67.0 \
+  /usr/lib/aarch64-linux-gnu/libicudata.so.63 \
+  /usr/lib/aarch64-linux-gnu/libicui18n.so.63 \
+  /usr/lib/aarch64-linux-gnu/libicuuc.so.63 \
+  /usr/lib/aarch64-linux-gnu/libicudata.so.63 \
+  /usr/lib/aarch64-linux-gnu/libicui18n.so.63 \
+  /usr/lib/aarch64-linux-gnu/libicuuc.so.63 \
+  /usr/lib/aarch64-linux-gnu/libicudata.so.63 \
+  /usr/lib/aarch64-linux-gnu/libicui18n.so.63 \
+  /usr/lib/aarch64-linux-gnu/libicuuc.so.63 \
+  /usr/lib/aarch64-linux-gnu/libcurl-gnutls.so.4 \
+  /usr/lib/aarch64-linux-gnu/libbrotlicommon.so.1 \
+  /usr/lib/aarch64-linux-gnu/libbrotlicommon.so.1 \
+  /usr/lib/aarch64-linux-gnu/libnghttp2.so.14 \
+  /usr/lib/aarch64-linux-gnu/librtmp.so.1 \
+  /usr/lib/aarch64-linux-gnu/libssh2.so.1 \
+  /usr/lib/aarch64-linux-gnu/libpsl.so.5 \
+  /usr/lib/aarch64-linux-gnu/libgssapi_krb5.so.2 \
+  /usr/lib/aarch64-linux-gnu/libkrb5.so.3 \
+  /usr/lib/aarch64-linux-gnu/libk5crypto.so.3 \
+  /usr/lib/aarch64-linux-gnu/libldap_r-2.4.so.2 \
+  /usr/lib/aarch64-linux-gnu/liblber-2.4.so.2 \
+  /usr/lib/aarch64-linux-gnu/libkrb5support.so.0 \
+  /lib/aarch64-linux-gnu/libkeyutils.so.1 \
+  /usr/lib/aarch64-linux-gnu/libsasl2.so.2 \
+  /env/app/lib/
+ENV LD_LIBRARY_PATH=/env/app/lib
+
+COPY --from=build /env/app/cdc ./
+COPY --from=build /env/config/ /env/config/
+COPY scripts/docker-entrypoint.sh /cdc/build/scripts/docker-entrypoint.sh
+COPY scripts/setup-udev.sh /cdc/scripts/setup-udev.sh
+COPY scripts/udev /cdc/scripts/udev
+RUN  cp -f /cdc/scripts/udev /etc/init.d/udev
+ENTRYPOINT ["/bin/bash", "/cdc/build/scripts/docker-entrypoint.sh"]
+WORKDIR /env/app
+CMD ["./cdc"]
